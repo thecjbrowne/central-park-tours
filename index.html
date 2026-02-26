@@ -9,7 +9,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 <style>
 :root {
   --green-900: #0d2416;
@@ -719,10 +719,15 @@ let selectedId = null;
 //  INIT
 // ─────────────────────────────────────────────────────────────
 async function init() {
-  try {
-    supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+  // ALWAYS hide loading after 5 seconds no matter what
+  const loadingTimeout = setTimeout(() => {
+    document.getElementById('loading').style.display = 'none';
+    renderList();
+    renderMarkers();
+  }, 5000);
 
-    // Init main map
+  try {
+    // Step 1: Start map IMMEDIATELY — don't wait for DB
     map = L.map('map', {
       center: [40.7829, -73.9654],
       zoom: 14,
@@ -734,20 +739,40 @@ async function init() {
       maxZoom: 19,
     }).addTo(map);
 
-    // Load data in parallel
-    const [locsRes, filmsRes, waterRes, walksRes, guidesRes] = await Promise.all([
-      supabase.from('locations').select('*').order('name'),
-      supabase.from('film_locations').select('*').order('year'),
-      supabase.from('water_bodies').select('*').order('name'),
-      supabase.from('walks').select('*').eq('is_published', true).order('title'),
-      supabase.from('guides').select('*').eq('is_active', true),
+    // Map is ready — hide loading screen NOW
+    clearTimeout(loadingTimeout);
+    document.getElementById('loading').style.display = 'none';
+
+    // Step 2: Try to connect to Supabase
+    if (!window.supabase) {
+      console.warn('Supabase library not available — showing empty state');
+      renderList(); renderMarkers();
+      return;
+    }
+
+    supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY, {
+      auth: { persistSession: false, autoRefreshToken: false }
+    });
+
+    // Step 3: Load data with individual error handling
+    const safeQuery = async (query) => {
+      try { const r = await query; return r.data || []; }
+      catch(e) { console.warn('Query failed:', e); return []; }
+    };
+
+    const [locsData, filmsData, waterData, walksData, guidesData] = await Promise.all([
+      safeQuery(supabase.from('locations').select('*').order('name')),
+      safeQuery(supabase.from('film_locations').select('*').order('year')),
+      safeQuery(supabase.from('water_bodies').select('*').order('name')),
+      safeQuery(supabase.from('walks').select('*').eq('is_published', true).order('title')),
+      safeQuery(supabase.from('guides').select('*').eq('is_active', true)),
     ]);
 
-    allLocations = locsRes.data || [];
-    allFilms     = (filmsRes.data || []).filter(f => f.lat && f.lon);
-    allWater     = waterRes.data || [];
-    allWalks     = walksRes.data || [];
-    allGuides    = guidesRes.data || [];
+    allLocations = locsData;
+    allFilms     = filmsData.filter(f => f.lat && f.lon);
+    allWater     = waterData;
+    allWalks     = walksData;
+    allGuides    = guidesData;
 
     // Update stats
     document.getElementById('loc-count').textContent  = allLocations.length;
@@ -762,17 +787,22 @@ async function init() {
 
   } catch(e) {
     console.error('Init error:', e);
-    // Show a helpful message if Supabase isn't connected
+    clearTimeout(loadingTimeout);
+    document.getElementById('loading').style.display = 'none';
+    if (!map) {
+      map = L.map('map', { center: [40.7829, -73.9654], zoom: 14, zoomControl: false });
+      L.control.zoom({ position: 'bottomright' }).addTo(map);
+      L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
+        attribution: '&copy; OpenStreetMap &copy; CARTO', maxZoom: 19,
+      }).addTo(map);
+    }
+    document.getElementById('result-meta').textContent = 'Database loading…';
     document.getElementById('list').innerHTML = `
       <div class="empty">
-        <span class="empty-icon">🔌</span>
-        <strong>Connect your database</strong><br>
-        Add your Supabase URL and key to see live data.
-        <br><br>
-        <small style="color:#aaa">See setup instructions →</small>
+        <span class="empty-icon">🗺️</span>
+        <strong>Map is ready!</strong><br>
+        <small style="color:#aaa">Database connecting…<br>Refresh in a moment if locations don't appear.</small>
       </div>`;
-  } finally {
-    document.getElementById('loading').style.display = 'none';
   }
 }
 
@@ -1215,4 +1245,3 @@ init();
 </script>
 </body>
 </html>
-
