@@ -2,164 +2,76 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Central Park Boutique Tours</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
-<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-<script async src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js" onload="window.supabaseReady=true;if(window.tryLoadData)tryLoadData()"></script>
 <style>
-:root {
-  --green-900: #0d2416;
-  --green-800: #1a3d2b;
-  --green-700: #1e4d35;
-  --green-600: #2d6a4f;
-  --green-400: #52b788;
-  --green-200: #b7e4c7;
-  --gold:       #c9a84c;
-  --gold-light: #f0d98a;
-  --cream:      #f5f0e8;
-  --cream-dark: #ede5d8;
-  --white:      #ffffff;
-  --text-900:   #1a1a1a;
-  --text-600:   #444;
-  --text-400:   #777;
-  --text-300:   #aaa;
-  --sidebar-w:  340px;
-  --panel-h:    320px;
-  --header-h:   56px;
-  --radius:     10px;
-  --shadow-sm:  0 2px 8px rgba(0,0,0,.10);
-  --shadow-md:  0 4px 20px rgba(0,0,0,.16);
-  --shadow-lg:  0 8px 40px rgba(0,0,0,.22);
-  --transition: all 0.25s cubic-bezier(.4,0,.2,1);
-}
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-html, body { height: 100%; overflow: hidden; }
-body {
-  font-family: 'DM Sans', sans-serif;
-  background: var(--green-900);
-  color: var(--text-900);
-  display: flex;
-  flex-direction: column;
-}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { height: 100%; font-family: 'DM Sans', sans-serif; overflow: hidden; }
 
-/* ── HEADER ──────────────────────────────────────────────── */
+body { display: flex; flex-direction: column; background: #1a3d2b; }
+
 #header {
-  height: var(--header-h);
-  background: var(--green-800);
+  height: 52px;
+  background: #1a3d2b;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0 20px;
+  padding: 0 18px;
   flex-shrink: 0;
-  z-index: 1000;
-  border-bottom: 1px solid rgba(255,255,255,.07);
+  border-bottom: 1px solid rgba(255,255,255,.08);
 }
-.header-brand {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-.header-logo {
-  width: 32px;
-  height: 32px;
-  background: var(--green-600);
-  border-radius: 8px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 16px;
-}
-.header-title {
+.h-title {
   font-family: 'Playfair Display', serif;
-  font-size: 17px;
+  font-size: 18px;
+  color: #f5f0e8;
   font-weight: 700;
-  color: var(--cream);
-  letter-spacing: .01em;
 }
-.header-title span { color: var(--green-400); }
-.header-nav {
-  display: flex;
-  gap: 4px;
-}
-.nav-btn {
-  padding: 6px 14px;
-  border-radius: 7px;
-  font-size: 12px;
-  font-weight: 500;
-  color: rgba(245,240,232,.6);
-  background: none;
-  border: none;
-  cursor: pointer;
-  transition: var(--transition);
-  font-family: 'DM Sans', sans-serif;
-}
-.nav-btn:hover, .nav-btn.active {
-  background: rgba(255,255,255,.08);
-  color: var(--cream);
-}
-.nav-btn.active { color: var(--green-400); }
+.h-title span { color: #52b788; }
+.h-sub { font-size: 11px; color: rgba(245,240,232,.45); letter-spacing: .08em; text-transform: uppercase; }
 
-/* ── LAYOUT ──────────────────────────────────────────────── */
-#main {
-  flex: 1;
-  display: flex;
-  overflow: hidden;
-  position: relative;
-}
+#main { flex: 1; display: flex; overflow: hidden; }
 
-/* ── SIDEBAR ─────────────────────────────────────────────── */
+/* SIDEBAR */
 #sidebar {
-  width: var(--sidebar-w);
-  background: var(--cream);
+  width: 320px;
+  background: #f5f0e8;
   display: flex;
   flex-direction: column;
   flex-shrink: 0;
   overflow: hidden;
-  border-right: 1px solid var(--cream-dark);
-  transition: var(--transition);
+  border-right: 1px solid #e8e0d0;
 }
-#sidebar-header {
-  padding: 14px 16px 10px;
-  background: var(--cream);
-  border-bottom: 1px solid var(--cream-dark);
+
+#search-box {
+  padding: 12px;
+  border-bottom: 1px solid #e8e0d0;
   flex-shrink: 0;
-}
-.search-wrap {
-  position: relative;
-  margin-bottom: 10px;
 }
 #search {
   width: 100%;
-  padding: 9px 12px 9px 36px;
-  border: 1.5px solid rgba(0,0,0,.11);
+  padding: 8px 12px 8px 32px;
+  border: 1.5px solid rgba(0,0,0,.12);
   border-radius: 8px;
+  font-size: 13px;
   font-family: 'DM Sans', sans-serif;
-  font-size: 13px;
   background: white;
-  color: var(--text-900);
   outline: none;
-  transition: border-color .2s;
 }
-#search:focus { border-color: var(--green-600); }
-.search-icon {
-  position: absolute;
-  left: 11px;
-  top: 50%;
-  transform: translateY(-50%);
-  font-size: 13px;
-  opacity: .35;
-  pointer-events: none;
-}
-.filter-row {
+#search:focus { border-color: #2d6a4f; }
+.s-icon { position: absolute; left: 22px; top: 21px; font-size: 13px; opacity: .35; }
+
+#filters {
+  padding: 8px 12px;
   display: flex;
   flex-wrap: wrap;
   gap: 5px;
+  border-bottom: 1px solid #e8e0d0;
+  flex-shrink: 0;
 }
-.chip {
+.pill {
   padding: 4px 10px;
   border-radius: 20px;
   font-size: 11px;
@@ -167,2324 +79,380 @@ body {
   cursor: pointer;
   border: 1.5px solid rgba(0,0,0,.1);
   background: white;
-  color: var(--text-400);
-  transition: var(--transition);
-  white-space: nowrap;
+  color: #666;
+  transition: all .15s;
   user-select: none;
 }
-.chip:hover { border-color: var(--green-600); color: var(--green-600); }
-.chip.on { color: white; border-color: transparent; }
+.pill:hover { border-color: #2d6a4f; color: #2d6a4f; }
+.pill.on { color: white; border-color: transparent; }
 
-#result-meta {
-  padding: 8px 16px 3px;
-  font-size: 11px;
-  color: var(--text-400);
-  text-transform: uppercase;
-  letter-spacing: .07em;
-  flex-shrink: 0;
-}
-#list {
-  flex: 1;
-  overflow-y: auto;
-  padding-bottom: 16px;
-}
+#count { padding: 6px 12px; font-size: 11px; color: #888; text-transform: uppercase; letter-spacing: .06em; flex-shrink: 0; }
+
+#list { flex: 1; overflow-y: auto; }
 #list::-webkit-scrollbar { width: 3px; }
-#list::-webkit-scrollbar-thumb { background: rgba(0,0,0,.12); border-radius: 2px; }
+#list::-webkit-scrollbar-thumb { background: rgba(0,0,0,.1); border-radius: 2px; }
 
-.list-item {
-  padding: 11px 16px;
+.item {
+  padding: 10px 14px;
   cursor: pointer;
   border-bottom: 1px solid rgba(0,0,0,.04);
-  transition: background .12s;
   display: flex;
   align-items: flex-start;
-  gap: 10px;
+  gap: 9px;
+  transition: background .1s;
 }
-.list-item:hover { background: rgba(0,0,0,.035); }
-.list-item.selected { background: rgba(45,106,79,.09); }
-.item-dot {
-  width: 9px; height: 9px;
-  border-radius: 50%;
-  flex-shrink: 0;
-  margin-top: 4px;
-}
-.item-body { flex: 1; min-width: 0; }
-.item-name {
-  font-size: 13px;
-  font-weight: 500;
-  color: var(--text-900);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  line-height: 1.3;
-}
-.item-sub {
-  font-size: 11px;
-  color: var(--text-400);
-  margin-top: 1px;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
+.item:hover { background: rgba(0,0,0,.03); }
+.item.on { background: rgba(45,106,79,.08); }
+.dot { width: 9px; height: 9px; border-radius: 50%; flex-shrink: 0; margin-top: 4px; }
+.iname { font-size: 13px; font-weight: 500; color: #1a1a1a; line-height: 1.3; }
+.isub { font-size: 11px; color: #888; margin-top: 1px; }
 
-/* walks list */
-.walk-card {
-  margin: 8px 12px;
-  border-radius: 10px;
+/* MAP */
+#map-wrap { flex: 1; position: relative; }
+#map { width: 100%; height: 100%; }
+
+/* DETAIL PANEL */
+#panel {
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
   background: white;
-  border: 1px solid var(--cream-dark);
-  padding: 12px 14px;
-  cursor: pointer;
-  transition: var(--transition);
-}
-.walk-card:hover { box-shadow: var(--shadow-sm); transform: translateY(-1px); }
-.walk-title {
-  font-family: 'Playfair Display', serif;
-  font-size: 14px;
-  font-weight: 600;
-  color: var(--text-900);
-  margin-bottom: 4px;
-  line-height: 1.3;
-}
-.walk-guide {
-  font-size: 11px;
-  color: var(--green-600);
-  font-weight: 500;
-  margin-bottom: 6px;
-}
-.walk-stats {
-  display: flex;
-  gap: 10px;
-  font-size: 11px;
-  color: var(--text-400);
-}
-.walk-stat { display: flex; align-items: center; gap: 3px; }
-.walk-tags {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 4px;
-  margin-top: 8px;
-}
-.walk-tag {
-  padding: 2px 7px;
-  background: var(--cream);
-  border-radius: 4px;
-  font-size: 10px;
-  color: var(--text-400);
-}
-.walk-btn {
-  display: block;
-  width: 100%;
-  margin-top: 10px;
-  padding: 8px;
-  background: var(--green-600);
-  color: white;
-  border: none;
-  border-radius: 7px;
-  font-size: 12px;
-  font-weight: 500;
-  cursor: pointer;
-  font-family: 'DM Sans', sans-serif;
-  transition: background .15s;
-}
-.walk-btn:hover { background: var(--green-800); }
-
-/* empty state */
-.empty {
-  padding: 40px 20px;
-  text-align: center;
-  color: var(--text-400);
-  font-size: 13px;
-  line-height: 1.6;
-}
-.empty-icon { font-size: 32px; display: block; margin-bottom: 10px; }
-
-/* ── MAP AREA ─────────────────────────────────────────────── */
-#map-area {
-  flex: 1;
-  position: relative;
-  overflow: hidden;
-}
-#map {
-  width: 100%;
-  height: 100%;
-}
-
-/* map overlay stats */
-#map-stats {
-  position: absolute;
-  top: 12px;
-  right: 12px;
-  z-index: 500;
-  display: flex;
-  flex-direction: column;
-  gap: 5px;
-  align-items: flex-end;
-}
-.stat-pill {
-  background: rgba(13,36,22,.85);
-  color: var(--cream);
-  padding: 5px 11px;
-  border-radius: 20px;
-  font-size: 11px;
-  font-weight: 500;
-  backdrop-filter: blur(8px);
-  white-space: nowrap;
-}
-.stat-pill b { color: var(--green-400); }
-
-/* ── DETAIL PANEL ─────────────────────────────────────────── */
-#detail {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
+  border-top: 3px solid #2d6a4f;
+  box-shadow: 0 -4px 24px rgba(0,0,0,.15);
   max-height: 0;
   overflow: hidden;
-  background: white;
-  z-index: 600;
-  transition: max-height .35s cubic-bezier(.4,0,.2,1);
-  border-top: 3px solid var(--green-600);
-  box-shadow: 0 -6px 30px rgba(0,0,0,.15);
+  transition: max-height .3s cubic-bezier(.4,0,.2,1);
+  z-index: 500;
 }
-#detail.open { max-height: var(--panel-h); }
-#detail-inner {
-  padding: 18px 22px 22px;
-  max-height: var(--panel-h);
+#panel.open { max-height: 300px; }
+#panel-inner {
+  padding: 16px 20px 20px;
+  max-height: 300px;
   overflow-y: auto;
 }
-#detail-inner::-webkit-scrollbar { width: 3px; }
-#detail-inner::-webkit-scrollbar-thumb { background: rgba(0,0,0,.12); border-radius: 2px; }
-#detail-close {
-  position: absolute;
-  top: 12px; right: 14px;
-  background: rgba(0,0,0,.06);
-  border: none;
-  width: 28px; height: 28px;
-  border-radius: 50%;
-  font-size: 16px;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: var(--text-400);
-  transition: background .15s;
+#panel-inner::-webkit-scrollbar { width: 3px; }
+#panel-inner::-webkit-scrollbar-thumb { background: rgba(0,0,0,.1); border-radius: 2px; }
+
+#p-close {
+  position: absolute; top: 10px; right: 12px;
+  background: rgba(0,0,0,.07); border: none;
+  width: 26px; height: 26px; border-radius: 50%;
+  font-size: 15px; cursor: pointer; color: #666;
+  display: flex; align-items: center; justify-content: center;
 }
-#detail-close:hover { background: rgba(0,0,0,.12); color: var(--text-900); }
-#detail-badge {
-  display: inline-flex;
-  align-items: center;
-  gap: 5px;
-  padding: 3px 10px;
-  border-radius: 20px;
-  font-size: 11px;
-  font-weight: 600;
-  letter-spacing: .06em;
-  text-transform: uppercase;
-  color: white;
+#p-close:hover { background: rgba(0,0,0,.13); }
+
+#p-badge {
+  display: inline-block;
+  padding: 2px 9px; border-radius: 20px;
+  font-size: 10px; font-weight: 600;
+  letter-spacing: .07em; text-transform: uppercase;
+  color: white; margin-bottom: 6px;
+}
+#p-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 21px; font-weight: 700;
+  color: #1a1a1a; line-height: 1.2; margin-bottom: 4px;
+}
+#p-sub { font-size: 12px; color: #888; margin-bottom: 10px; }
+#p-tags { display: flex; flex-wrap: wrap; gap: 4px; margin-bottom: 10px; }
+.ptag { padding: 2px 7px; background: #f5f0e8; border-radius: 4px; font-size: 10px; color: #777; }
+#p-desc { font-size: 13px; line-height: 1.72; color: #333; margin-bottom: 10px; }
+#p-story {
+  background: #f0f7f4; border-left: 3px solid #2d6a4f;
+  padding: 9px 13px; border-radius: 0 7px 7px 0;
+  font-size: 12px; font-style: italic; line-height: 1.65; color: #2a4a3a;
   margin-bottom: 8px;
 }
-#detail-title {
-  font-family: 'Playfair Display', serif;
-  font-size: 22px;
-  font-weight: 700;
-  color: var(--text-900);
-  line-height: 1.2;
-  margin-bottom: 4px;
-}
-#detail-subtitle {
-  font-size: 13px;
-  color: var(--text-400);
-  margin-bottom: 10px;
-}
-#detail-tags {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 4px;
-  margin-bottom: 12px;
-}
-.dtag {
-  padding: 2px 8px;
-  background: var(--cream);
-  border-radius: 4px;
-  font-size: 10px;
-  color: var(--text-400);
-  letter-spacing: .03em;
-}
-#detail-desc {
-  font-size: 13px;
-  line-height: 1.75;
-  color: #333;
-  margin-bottom: 12px;
-}
-#detail-story {
-  background: #f0f7f4;
-  border-left: 3px solid var(--green-600);
-  padding: 10px 14px;
-  border-radius: 0 8px 8px 0;
-  font-size: 12.5px;
-  font-style: italic;
-  line-height: 1.65;
-  color: #2a4a3a;
-  margin-bottom: 10px;
-}
-#detail-story strong {
-  display: block;
-  font-style: normal;
-  font-size: 10px;
-  text-transform: uppercase;
-  letter-spacing: .08em;
-  color: var(--green-600);
-  margin-bottom: 4px;
-}
-#detail-coords {
-  font-size: 11px;
-  color: var(--text-300);
-  font-family: monospace;
-}
+#p-story b { font-style: normal; font-size: 10px; text-transform: uppercase; letter-spacing: .07em; color: #2d6a4f; display: block; margin-bottom: 3px; }
+#p-coords { font-size: 10px; color: #bbb; font-family: monospace; }
 
-/* ── WALK PLAYER ─────────────────────────────────────────── */
-#walk-player {
-  position: absolute;
-  top: 0; left: 0; right: 0; bottom: 0;
-  background: var(--cream);
-  z-index: 700;
-  display: none;
-  flex-direction: column;
-}
-#walk-player.open { display: flex; }
-#player-header {
-  background: var(--green-800);
-  padding: 14px 18px;
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  flex-shrink: 0;
-}
-#player-back {
-  background: rgba(255,255,255,.1);
-  border: none;
-  color: white;
-  width: 32px; height: 32px;
-  border-radius: 8px;
-  font-size: 16px;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-}
-#player-back:hover { background: rgba(255,255,255,.18); }
-#player-title {
-  font-family: 'Playfair Display', serif;
-  font-size: 16px;
-  color: white;
-  font-weight: 600;
-  flex: 1;
-}
-#player-map { flex: 1; }
-#player-waypoints {
-  height: 200px;
-  overflow-x: auto;
-  overflow-y: hidden;
-  display: flex;
-  gap: 10px;
-  padding: 12px 14px;
-  background: white;
-  border-top: 1px solid var(--cream-dark);
-  flex-shrink: 0;
-}
-#player-waypoints::-webkit-scrollbar { height: 3px; }
-#player-waypoints::-webkit-scrollbar-thumb { background: rgba(0,0,0,.12); border-radius: 2px; }
-.wp-card {
-  min-width: 160px;
-  max-width: 160px;
-  background: var(--cream);
-  border-radius: 8px;
-  padding: 10px 12px;
-  cursor: pointer;
-  border: 2px solid transparent;
-  transition: var(--transition);
-  flex-shrink: 0;
-}
-.wp-card:hover { border-color: var(--green-400); }
-.wp-card.current { border-color: var(--green-600); background: white; }
-.wp-num {
-  width: 22px; height: 22px;
-  border-radius: 50%;
-  background: var(--green-600);
-  color: white;
-  font-size: 11px;
-  font-weight: 700;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin-bottom: 6px;
-}
-.wp-name {
-  font-size: 12px;
-  font-weight: 500;
-  color: var(--text-900);
-  line-height: 1.3;
-  margin-bottom: 3px;
-}
-.wp-sub { font-size: 10px; color: var(--text-400); line-height: 1.3; }
-
-/* loading overlay */
-#loading {
-  position: absolute;
-  inset: 0;
-  background: var(--green-900);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 9999;
-  flex-direction: column;
-  gap: 16px;
-}
-#loading h2 {
-  font-family: 'Playfair Display', serif;
-  color: var(--cream);
-  font-size: 22px;
-  font-weight: 400;
-}
-#loading p { font-size: 13px; color: var(--green-400); }
-.spinner {
-  width: 36px; height: 36px;
-  border: 3px solid rgba(255,255,255,.1);
-  border-top-color: var(--green-400);
-  border-radius: 50%;
-  animation: spin .8s linear infinite;
-}
-@keyframes spin { to { transform: rotate(360deg); } }
-
-/* tabs */
-#tabs {
-  display: flex;
-  background: var(--cream-dark);
-  border-bottom: 1px solid rgba(0,0,0,.08);
-  flex-shrink: 0;
-}
-.tab {
-  flex: 1;
-  padding: 9px 8px;
-  font-size: 12px;
-  font-weight: 500;
-  text-align: center;
-  cursor: pointer;
-  color: var(--text-400);
-  border-bottom: 2px solid transparent;
-  transition: var(--transition);
-  user-select: none;
-}
-.tab.active {
-  color: var(--green-700);
-  border-bottom-color: var(--green-600);
-  background: var(--cream);
-}
-
-/* popup */
-.lp-inner { padding: 10px 14px; min-width: 160px; max-width: 220px; }
-.lp-cat { font-size: 10px; font-weight: 600; letter-spacing: .07em; text-transform: uppercase; margin-bottom: 3px; }
-.lp-name { font-family: 'Playfair Display', serif; font-size: 14px; font-weight: 700; color: var(--text-900); margin-bottom: 4px; line-height: 1.2; }
-.lp-sub { font-size: 11px; color: var(--text-400); line-height: 1.4; margin-bottom: 8px; }
-.lp-btn { padding: 5px 12px; background: var(--green-600); color: white; border: none; border-radius: 5px; font-size: 11px; font-weight: 500; cursor: pointer; font-family: 'DM Sans', sans-serif; }
-.lp-btn:hover { background: var(--green-800); }
-
-.leaflet-popup-content-wrapper { border-radius: 10px; box-shadow: var(--shadow-md); padding: 0; overflow: hidden; }
+/* leaflet tweaks */
+.leaflet-popup-content-wrapper { border-radius: 10px; box-shadow: 0 4px 20px rgba(0,0,0,.18); padding: 0; overflow: hidden; }
 .leaflet-popup-content { margin: 0; }
 .leaflet-popup-tip-container { display: none; }
-.leaflet-control-zoom { border: none !important; box-shadow: var(--shadow-sm) !important; }
-.leaflet-control-zoom a { border-radius: 6px !important; margin-bottom: 3px !important; font-weight: 400 !important; border: 1px solid rgba(0,0,0,.08) !important; }
+.lp { padding: 10px 14px; min-width: 160px; max-width: 220px; }
+.lp-cat { font-size: 10px; font-weight: 600; letter-spacing: .07em; text-transform: uppercase; margin-bottom: 3px; }
+.lp-name { font-family: 'Playfair Display', serif; font-size: 14px; font-weight: 700; color: #1a1a1a; margin-bottom: 5px; line-height: 1.2; }
+.lp-sub { font-size: 11px; color: #777; margin-bottom: 8px; line-height: 1.4; }
+.lp-btn { padding: 5px 12px; background: #2d6a4f; color: white; border: none; border-radius: 5px; font-size: 11px; font-weight: 500; cursor: pointer; font-family: 'DM Sans', sans-serif; }
+.lp-btn:hover { background: #1a3d2b; }
 
-@media (max-width: 680px) {
-  #sidebar { display: none; }
-  #detail { left: 0; }
-}
+@media (max-width: 640px) { #sidebar { display: none; } }
 </style>
 </head>
-<script>
-// HARD FAILSAFE: loading ALWAYS disappears after 2.5 seconds
-window.supabaseReady = false;
-setTimeout(function() {
-  var el = document.getElementById("loading");
-  if (el) el.style.display = "none";
-}, 2500);
-</script>
 <body>
 
-<div id="loading">
-  <div class="spinner"></div>
-  <h2>Central Park</h2>
-  <p>Loading your guide…</p>
-</div>
-
 <div id="header">
-  <div class="header-brand">
-    <div class="header-logo">🌳</div>
-    <div class="header-title">Central Park <span>Boutique Tours</span></div>
+  <div>
+    <div class="h-title">Central Park <span>Boutique Tours</span></div>
   </div>
-  <div class="header-nav">
-    <button class="nav-btn active" onclick="switchTab('map')">Map</button>
-    <button class="nav-btn" onclick="switchTab('walks')">Walks</button>
-    <button class="nav-btn" onclick="switchTab('about')">About</button>
-  </div>
+  <div class="h-sub">Interactive Map · NYC</div>
 </div>
 
 <div id="main">
-  <!-- SIDEBAR -->
   <div id="sidebar">
-    <div id="tabs">
-      <div class="tab active" onclick="setListTab('locations')" id="tab-locations">📍 Locations</div>
-      <div class="tab" onclick="setListTab('film')" id="tab-film">🎬 Films</div>
-      <div class="tab" onclick="setListTab('water')" id="tab-water">💧 Water</div>
+    <div id="search-box" style="position:relative">
+      <span class="s-icon">🔍</span>
+      <input id="search" type="text" placeholder="Search locations, films, history…">
     </div>
-    <div id="sidebar-header">
-      <div class="search-wrap">
-        <span class="search-icon">🔍</span>
-        <input id="search" type="text" placeholder="Search locations, films, history…">
-      </div>
-      <div class="filter-row" id="filters"></div>
-    </div>
-    <div id="result-meta">Loading…</div>
+    <div id="filters"></div>
+    <div id="count"></div>
     <div id="list"></div>
   </div>
 
-  <!-- MAP -->
-  <div id="map-area">
+  <div id="map-wrap">
     <div id="map"></div>
 
-    <div id="map-stats">
-      <div class="stat-pill"><b id="loc-count">—</b> locations</div>
-      <div class="stat-pill"><b id="walk-count">—</b> walks</div>
-    </div>
-
-    <!-- DETAIL PANEL -->
-    <div id="detail">
-      <button id="detail-close" onclick="closeDetail()">×</button>
-      <div id="detail-inner">
-        <div id="detail-badge"></div>
-        <div id="detail-title"></div>
-        <div id="detail-subtitle"></div>
-        <div id="detail-tags"></div>
-        <div id="detail-desc"></div>
-        <div id="detail-story"><strong>Tour Story</strong><span id="detail-story-text"></span></div>
-        <div id="detail-coords"></div>
+    <div id="panel">
+      <button id="p-close" onclick="closePanel()">×</button>
+      <div id="panel-inner">
+        <div id="p-badge"></div>
+        <div id="p-title"></div>
+        <div id="p-sub"></div>
+        <div id="p-tags"></div>
+        <div id="p-desc"></div>
+        <div id="p-story"><b>Tour Story</b><span id="p-story-text"></span></div>
+        <div id="p-coords"></div>
       </div>
     </div>
   </div>
 </div>
 
-<!-- WALK PLAYER (full screen overlay) -->
-<div id="walk-player">
-  <div id="player-header">
-    <button id="player-back" onclick="closeWalkPlayer()">←</button>
-    <div id="player-title">Walk</div>
-  </div>
-  <div id="player-map"></div>
-  <div id="player-waypoints"></div>
-</div>
-
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script>
-// ─────────────────────────────────────────────────────────────
-//  CONFIG — reads from environment variables injected by Vercel
-//  or falls back to window globals for local development
-// ─────────────────────────────────────────────────────────────
-const SUPABASE_URL  = 'https://xwsaaexelggzjawnczlu.supabase.co';
-const SUPABASE_KEY  = 'sb_publishable_oYA2Ac-k0f79Did4sX2IIQ_DqR6suwY';
-
-const CAT_COLORS = {
+// ═══════════════════════════════════════════════════
+//  DATA — all locations hardcoded, zero DB dependency
+// ═══════════════════════════════════════════════════
+const COLORS = {
   landmark: '#2d6a4f',
   film:     '#1565C0',
-  lgbtq:    '#6A0DAD',
+  lgbtq:    '#7B1FA2',
   history:  '#8B3A0F',
   music:    '#E65100',
-  nature:   '#1A5C38',
+  nature:   '#2E7D32',
   facility: '#00695C',
   civil:    '#B71C1C',
-  water:    '#0277BD',
-  default:  '#555',
 };
 
-const CAT_EMOJI = {
-  landmark:'🏛️', film:'🎬', lgbtq:'🏳️‍🌈',
-  history:'⚔️', music:'🎵', nature:'🌿',
-  facility:'🚻', civil:'✊', water:'💧',
-};
+const DATA = [
+  // LANDMARKS
+  { id:1,  cat:'landmark', name:'Bethesda Fountain',        sub:'Emma Stebbins, 1873',                     lat:40.7740, lon:-73.9710, tags:['fountain','landmark','wedding'],         desc:'The centerpiece of Central Park. The Angel of the Waters is the only sculpture commissioned as part of the original park design — and secretly queer from day one. Sculptor Emma Stebbins was a lesbian who modeled the Angel on her partner Charlotte Cushman.', story:'Of 51 sculptures in Central Park, fewer than 10 depict women. This one, made by a lesbian and modeled on her lover, is the most famous.' },
+  { id:2,  cat:'landmark', name:'Bow Bridge',               sub:'Calvert Vaux, 1862',                      lat:40.7754, lon:-73.9726, tags:['bridge','film','romantic'],             desc:'The largest and most filmed of the park\'s 36 bridges. Every bridge is different by design — Vaux considered variety essential so visitors never felt they were going in circles.', story:'Nora Ephron chose this bridge for When Harry Met Sally because, she said, it looks like a painting in every direction.' },
+  { id:3,  cat:'landmark', name:'Belvedere Castle',         sub:'Calvert Vaux, 1869 — highest point',      lat:40.7794, lon:-73.9691, tags:['castle','views','architecture'],        desc:'Built as a decorative "folly" — meaning it was never intended to function as a real castle. Sits on Vista Rock, the second-highest natural point in the park. Has housed the Central Park Weather Station since 1919.', story:'It\'s not a real castle. Vaux built it so the Great Lawn would have a romantic focal point. It has never had any defensive purpose.' },
+  { id:4,  cat:'landmark', name:'Strawberry Fields',        sub:'John Lennon memorial, 1985',              lat:40.7754, lon:-73.9790, tags:['memorial','lennon','peace'],            desc:'A 2.5-acre international garden of peace dedicated to John Lennon, who was shot outside the Dakota across the street on December 8, 1980. The IMAGINE mosaic is a gift from Naples, Italy.', story:'People leave flowers at the IMAGINE mosaic every single day. The Dakota has never erected a plaque.' },
+  { id:5,  cat:'landmark', name:'The Mall / Literary Walk', sub:'Only straight line in Olmsted\'s design',  lat:40.7712, lon:-73.9712, tags:['elms','shakespeare','formal'],          desc:'The only formal straight element in Olmsted\'s deliberately naturalistic design — included reluctantly. Lined with one of the last great stands of American elm in the northeast. Statues of Shakespeare, Burns, Scott, and Columbus line the path.', story:'Olmsted hated straight lines. This is the one compromise he made, and he resented it. He considered formal geometry an imposition on nature.' },
+  { id:6,  cat:'landmark', name:'Cleopatra\'s Needle',      sub:'~1600 BCE — oldest object in NYC',        lat:40.7796, lon:-73.9637, tags:['ancient','egypt','obelisk'],            desc:'An Egyptian obelisk dating to approximately 1600 BCE — the oldest public monument in the Western Hemisphere. Julius Caesar and Cleopatra walked past it. Given to the US by Egypt in 1877. The bronze crabs at its base are Roman originals, 2,000 years old.', story:'This obelisk was already ancient when Rome was born. It stood for 1,500 years before Columbus sailed. New York air pollution is slowly dissolving it.' },
+  { id:7,  cat:'landmark', name:'Conservatory Garden',      sub:'WPA project, 1937',                       lat:40.7957, lon:-73.9510, tags:['garden','formal','WPA','vanderbilt'],   desc:'Six acres of formal gardens opened in 1937 as a Works Progress Administration New Deal project. Three styles: Italian, French, and English. The iron Vanderbilt Gate was salvaged from the Cornelius Vanderbilt II mansion, demolished in 1926.', story:'This garden exists because of the New Deal. Thousands of Depression-era workers built it. You walk through a Vanderbilt\'s gate every time you enter.' },
+  { id:8,  cat:'landmark', name:'The Arsenal',              sub:'Greensward Plan selected here, 1858',     lat:40.7672, lon:-73.9706, tags:['history','architecture','nyc parks'],    desc:'Built in 1848, this building predates Central Park itself. In April 1858, the park commissioners met here and chose Olmsted and Vaux\'s "Greensward Plan" from 33 submissions — the decision that created the park.', story:'Before it was offices, the Arsenal briefly housed tigers and bears. It was New York\'s first weather bureau station and once served as a police precinct.' },
+  { id:9,  cat:'landmark', name:'The Dairy',                sub:'Calvert Vaux, 1870 — public health',      lat:40.7680, lon:-73.9739, tags:['architecture','victorian','visitor center'], desc:'Originally an actual dairy where fresh milk was dispensed to city children and nursing mothers. Olmsted believed city children needed access to uncontaminated milk. Fell into disrepair by the 1960s. Restored 1979.', story:'This was a public health intervention. The milk supply in 1870 New York was often contaminated and killing children. Olmsted built a dairy inside the park as a remedy.' },
+  { id:10, cat:'landmark', name:'Wollman Rink',             sub:'Trump renovation controversy, 1986',      lat:40.7646, lon:-73.9740, tags:['skating','film','love story'],           desc:'Built in 1950. In 1986, the city had spent 6 years and $12M failing to renovate it. Donald Trump proposed taking over and completed it in 4 months under budget — one of his earliest public "can-do" builder appearances. Featured in Love Story and Serendipity.', story:'The failed city renovation spent $12 million. Trump completed it for $2.5 million. It was the publicity launchpad for a persona he would ride for decades.' },
+  { id:11, cat:'landmark', name:'Loeb Boathouse',           sub:'Victorian boathouse — When Harry Met Sally', lat:40.7758, lon:-73.9693, tags:['film','restaurant','rowing'],        desc:'Rowboats have been available for rent here since the park opened in 1859. Nora Ephron filmed the rowboat scene from When Harry Met Sally on the lake just outside.', story:'This is the only place in midtown Manhattan where you can sit on a lake surrounded entirely by trees with no buildings visible. The city disappears completely.' },
+  { id:12, cat:'landmark', name:'Delacorte Theater',        sub:'Free Shakespeare since 1962',             lat:40.7800, lon:-73.9695, tags:['theater','shakespeare','free'],          desc:'Built 1962. Home to Shakespeare in the Park, founded by Joseph Papp on the principle that Shakespeare belongs to everyone. Meryl Streep, Kevin Kline, Al Pacino, Denzel Washington, and Anne Hathaway have all performed here for free.', story:'The 1971 production of Two Gentlemen of Verona here transferred to Broadway and won the Tony for Best Musical. A free park show launched a Broadway hit.' },
+  { id:13, cat:'landmark', name:'Naumburg Bandshell',       sub:'1923 — Rolling Stones played here',      lat:40.7718, lon:-73.9690, tags:['music','architecture','1923'],           desc:'Built 1923. In 1975, the Rolling Stones pulled up on flatbed trucks and performed without a permit while stuck in traffic. Featured in Marathon Man (1976).', story:'The Rolling Stones performed here guerrilla-style in 1975 — no permit, no stage setup. By the time police arrived, it was already a scene.' },
+  { id:14, cat:'landmark', name:'Tavern on the Green',      sub:'Former sheepfold, opened 1934',           lat:40.7730, lon:-73.9783, tags:['restaurant','history','robert moses'],   desc:'Originally the park\'s sheepfold where the Sheep Meadow sheep lived. Robert Moses kicked the sheep out in 1934 and converted it to a restaurant. Under Warner LeRoy it became the highest-grossing restaurant in America.', story:'The meadow still bears the sheep\'s name 90 years after they left. Sheep grazed here from 1864 to 1934.' },
 
-// ─────────────────────────────────────────────────────────────
-//  STATE
-// ─────────────────────────────────────────────────────────────
-let supabase, map, playerMap;
-let allLocations = [], allFilms = [], allWater = [], allWalks = [], allGuides = [];
-let markers = [], playerMarkers = [];
+  // FILM
+  { id:20, cat:'film', name:'Gapstow Bridge',               sub:'Home Alone 2, Gossip Girl, Enchanted',   lat:40.7641, lon:-73.9737, tags:['bridge','home alone 2','photography'],   desc:'Built 1896. Kevin McCallister stood here feeding pigeons in Home Alone 2 (1992). One of the most filmed spots in the park, offering an iconic skyline view with the Plaza Hotel.', story:'If you\'ve seen New York City in a movie, you\'ve almost certainly seen this bridge. It\'s Hollywood\'s most reliable "we\'re in Central Park" establishing shot.' },
+  { id:21, cat:'film', name:'Bethesda Terrace (Film)',      sub:'The Warriors, Angels in America',        lat:40.7738, lon:-73.9708, tags:['film','the warriors','most filmed'],      desc:'The single most filmed location in Central Park. In The Warriors (1979) all NYC gangs gather here for a truce meeting. In Angels in America (2003) the fountain represents healing.', story:'The same fountain plays radically different roles in different films because it holds any meaning you give it. It\'s a blank canvas.' },
+  { id:22, cat:'film', name:'Sheep Meadow (Film)',          sub:'Countless establishing shots',            lat:40.7710, lon:-73.9773, tags:['film','establishing shot','meadow'],     desc:'The 15-acre lawn is one of the most used establishing shots in New York film history — the defining image of Central Park at leisure.', story:'Olmsted designed this meadow to give urban New Yorkers the experience of open countryside. It worked so well it became Hollywood\'s visual shorthand for "city park" worldwide.' },
+
+  // LGBTQ
+  { id:30, cat:'lgbtq', name:'The Ramble — Fruited Plain',  sub:'Gay social history since 1900s',         lat:40.7764, lon:-73.9712, tags:['lgbtq history','cruising','1920s'],       desc:'A 36-acre wooded area that has been a gay meeting ground since at least the early 1900s. The north lawn was nicknamed "The Fruited Plain" in the 1920s — one of the earliest documented public gay gathering spaces in the US. Harvey Milk was arrested here in 1947.', story:'In 1947, weeks out of high school, Harvey Milk was arrested here in a police entrapment operation. He would go on to become the first openly gay elected official in California.' },
+  { id:31, cat:'lgbtq', name:'Sheep Meadow — First Pride',  sub:'First Gay Pride "Gay-In" June 28, 1970', lat:40.7708, lon:-73.9775, tags:['lgbtq','pride 1970','stonewall'],        desc:'On June 28, 1970 — exactly one year after Stonewall — thousands gathered here for the first Christopher Street Liberation Day. Organizers expected a few hundred. The modern Pride parade descends directly from this moment.', story:'The organizers were stunned by the turnout. They had planned for a small gathering. What arrived was the beginning of a movement.' },
+  { id:32, cat:'lgbtq', name:'Seneca Village (LGBTQ context)', sub:'Black community displaced 1857',     lat:40.7720, lon:-73.9785, tags:['lgbtq context','displacement','black history'], desc:'From 1825–1857, approximately 225 Black residents lived here in one of Manhattan\'s most stable free Black communities, with three churches and two schools. Seized by eminent domain to build the park. No permanent memorial exists.', story:'This was one of the few places free Black New Yorkers could own land and thus qualify to vote. The park was built on their displacement.' },
+
+  // HISTORY
+  { id:40, cat:'history', name:'Seneca Village (1825–1857)', sub:'Black community displaced to build park', lat:40.7722, lon:-73.9787, tags:['displacement','black history','1857'],  desc:'From 1825–1857, approximately 225 Black residents lived here. Three churches, two schools, significant property ownership. The city used eminent domain and gave residents 90 days and below-market compensation. No permanent memorial.', story:'Seneca Village was one of the few places Black New Yorkers could own land and thus qualify to vote. The park we enjoy was built on their displacement.' },
+  { id:41, cat:'history', name:'Blockhouse No. 1',           sub:'Oldest structure in the park — 1814',   lat:40.7979, lon:-73.9541, tags:['war of 1812','oldest structure','military'], desc:'Built in 1814 when British forces threatened New York after burning Washington D.C. The attack never came. The blockhouse is the last surviving remnant of Manhattan\'s chain of wartime forts, predating the park by 45 years.', story:'This building was standing before the park existed. Built when New Yorkers genuinely feared a British invasion, it just sat here until a park was built around it.' },
+  { id:42, cat:'history', name:'Exonerated Five Site',       sub:'April 19, 1989 — wrongful conviction', lat:40.7892, lon:-73.9554, tags:['wrongful conviction','racial justice','1989'], desc:'Near here on April 19, 1989, Trisha Meili was attacked. Five Black and Latino teenagers were coerced into false confessions and wrongfully convicted, serving 6–13 years before being exonerated in 2002. They received a $41M settlement in 2014.', story:'Donald Trump took out full-page newspaper ads calling for the death penalty before the boys were tried. He never apologized after their exoneration.' },
+  { id:43, cat:'history', name:'Dakota Building',            sub:'John Lennon shot Dec 8, 1980',          lat:40.7762, lon:-73.9800, tags:['lennon','murder','1980','dakota'],         desc:'On December 8, 1980, John Lennon was shot four times by Mark David Chapman in the archway of the Dakota. Chapman had received Lennon\'s autograph earlier that day and waited for him to return. Lennon was pronounced dead at Roosevelt Hospital.', story:'Chapman was holding a copy of The Catcher in the Rye when arrested. J.D. Salinger was reportedly horrified his novel had been invoked. He gave no public statement.' },
+
+  // MUSIC
+  { id:50, cat:'music', name:'Great Lawn — Simon & Garfunkel', sub:'500,000 people — Sept 19, 1981',    lat:40.7800, lon:-73.9654, tags:['concert','simon garfunkel','1981','500k'],  desc:'Simon & Garfunkel performed a free reunion concert before an estimated 500,000 people — one of the largest concerts in history. The Concert in Central Park was recorded and released on HBO in 1982.', story:'Half a million people stood on this lawn on one night. Simon and Garfunkel split again shortly after. Some reunions don\'t take.' },
+  { id:51, cat:'music', name:'Great Lawn — Nuclear Rally',   sub:'1 million people — June 12, 1982',    lat:40.7802, lon:-73.9656, tags:['protest','nuclear','1982','largest rally'],  desc:'Approximately ONE MILLION people gathered here during the UN Special Session on Disarmament — the largest political demonstration in American history.', story:'One million people on this lawn in one afternoon. The damage required the lawn to be completely rebuilt with a new drainage system in 1997.' },
+  { id:52, cat:'music', name:'Rumsey Playfield — SummerStage', sub:'Free concerts since 1986',          lat:40.7697, lon:-73.9712, tags:['summerstage','free music','concerts'],       desc:'Home to City Parks Foundation\'s SummerStage since 1986, presenting ~100 events per year, roughly half completely free. Lauryn Hill, Sonic Youth, Massive Attack, and thousands of others have performed here.', story:'SummerStage was born from the same movement that restored the park — the idea that Central Park should serve all New Yorkers, including those who couldn\'t afford Madison Square Garden.' },
+
+  // NATURE
+  { id:60, cat:'nature', name:'The Ramble — Birdwatching',   sub:'Top migration site on East Coast',     lat:40.7768, lon:-73.9715, tags:['birdwatching','migration','wildlife'],      desc:'One of the top birdwatching sites in the eastern United States during spring and fall migration. Over 200 species recorded. The woodland provides critical habitat for birds navigating the Atlantic Flyway.', story:'During peak migration in May, serious birders arrive before dawn. The park records more bird species in a single day than most people see in a year.' },
+  { id:61, cat:'nature', name:'Shakespeare Garden',          sub:'80+ plants from Shakespeare\'s works',  lat:40.7785, lon:-73.9737, tags:['garden','shakespeare','botany'],            desc:'A winding informal garden featuring over 80 plants mentioned in Shakespeare\'s plays, each labeled with the relevant quotation. Includes mulberry trees grown from cuttings of a tree planted by Shakespeare himself.', story:'The mulberry cuttings trace their lineage to a tree at Shakespeare\'s home in Stratford-upon-Avon. These branches are genetically connected to something Shakespeare touched.' },
+  { id:62, cat:'nature', name:'Turtle Pond',                 sub:'Painted turtles and great blue herons', lat:40.7803, lon:-73.9692, tags:['turtles','wildlife','nature','pond'],     desc:'Home to painted turtles, red-eared sliders, great blue herons, and a variety of dragonflies below Belvedere Castle. One of the best wildlife observation spots in the park.', story:'The turtles sunbathe on logs most mornings April–October. On warm days dozens stack on the same log — a phenomenon that seems architecturally impossible until you see it.' },
+  { id:63, cat:'nature', name:'The Reservoir',               sub:'Jackie Kennedy ran here daily',         lat:40.7851, lon:-73.9618, tags:['running','jko reservoir','106 acres'],     desc:'The 106-acre Jacqueline Kennedy Onassis Reservoir held city drinking water from 1862 until 1993. The 1.58-mile running path is one of the most used in the world. Jackie Kennedy Onassis ran here daily in her final years.', story:'Jackie ran these loops every day for years, often unrecognized, jogging in a headscarf.' },
+
+  // CIVIL RIGHTS
+  { id:70, cat:'civil', name:'Sheep Meadow — Vietnam Protests', sub:'100,000–400,000 gathered April 15, 1967', lat:40.7707, lon:-73.9776, tags:['civil rights','vietnam','protest','1967'], desc:'Sheep Meadow was the primary gathering point for massive anti-Vietnam War demonstrations 1967–1972. On April 15, 1967, up to 400,000 people gathered here. Draft cards were burned publicly on this meadow.', story:'The April 1967 rally coordinated with a simultaneous 75,000-person march in San Francisco. Together they were a turning point in public opinion about the war.' },
+
+  // FACILITIES
+  { id:80, cat:'facility', name:'The Dairy Visitor Center',  sub:'Main park visitor center',              lat:40.7680, lon:-73.9741, tags:['visitor center','maps','info'],           desc:'The Victorian Gothic Dairy building (1870) now serves as the park\'s main visitor center. Staff can assist with navigation, events, and tours. Free maps available.', story:'Originally dispensed fresh milk to city children as a public health measure. Now dispenses maps.' },
+  { id:81, cat:'facility', name:'Charles A. Dana Discovery Center', sub:'Northeast park — free fishing', lat:40.7965, lon:-73.9518, tags:['visitor center','fishing','harlem meer'],  desc:'Environmental education center at Harlem Meer. Free fishing poles and bait for catch-and-release fishing April through October. One of the few places in Manhattan where you can fish for free.', story:'Every summer, thousands of city kids catch their first fish in this lake. The park provides all the equipment.' },
+];
+
+// ═══════════════════════════════════════════════════
+//  APP STATE
+// ═══════════════════════════════════════════════════
 let activeFilter = 'all';
-let activeListTab = 'locations';
 let searchQ = '';
 let selectedId = null;
+const markerMap = {};
 
-// ─────────────────────────────────────────────────────────────
-//  INIT
-// ─────────────────────────────────────────────────────────────
-async function init() {
-  // ALWAYS hide loading after 5 seconds no matter what
-  const loadingTimeout = setTimeout(() => {
-    document.getElementById('loading').style.display = 'none';
-    renderList();
-    renderMarkers();
-  }, 5000);
+// ═══════════════════════════════════════════════════
+//  MAP
+// ═══════════════════════════════════════════════════
+const map = L.map('map', {
+  center: [40.7829, -73.9654],
+  zoom: 14,
+  zoomControl: false,
+});
+L.control.zoom({ position: 'bottomright' }).addTo(map);
+L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
+  attribution: '&copy; <a href="https://openstreetmap.org">OSM</a> &copy; <a href="https://carto.com">CARTO</a>',
+  maxZoom: 19,
+}).addTo(map);
 
-  try {
-    // Step 1: Start map IMMEDIATELY — don't wait for DB
-    map = L.map('map', {
-      center: [40.7829, -73.9654],
-      zoom: 14,
-      zoomControl: false,
-    });
-    L.control.zoom({ position: 'bottomright' }).addTo(map);
-    L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
-      attribution: '&copy; OpenStreetMap &copy; CARTO',
-      maxZoom: 19,
-    }).addTo(map);
-
-    // Map is ready — hide loading screen NOW
-    clearTimeout(loadingTimeout);
-    document.getElementById('loading').style.display = 'none';
-
-    // Step 2: Try to connect to Supabase
-    if (!window.supabase) {
-      console.warn('Supabase library not available — showing empty state');
-      renderList(); renderMarkers();
-      return;
-    }
-
-    supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY, {
-      auth: { persistSession: false, autoRefreshToken: false }
-    });
-
-    // Step 3: Load data with individual error handling
-    const safeQuery = async (query) => {
-      try { const r = await query; return r.data || []; }
-      catch(e) { console.warn('Query failed:', e); return []; }
-    };
-
-    const [locsData, filmsData, waterData, walksData, guidesData] = await Promise.all([
-      safeQuery(supabase.from('locations').select('*').order('name')),
-      safeQuery(supabase.from('film_locations').select('*').order('year')),
-      safeQuery(supabase.from('water_bodies').select('*').order('name')),
-      safeQuery(supabase.from('walks').select('*').eq('is_published', true).order('title')),
-      safeQuery(supabase.from('guides').select('*').eq('is_active', true)),
-    ]);
-
-    allLocations = locsData;
-    allFilms     = filmsData.filter(f => f.lat && f.lon);
-    allWater     = waterData;
-    allWalks     = walksData;
-    allGuides    = guidesData;
-
-    // Update stats
-    document.getElementById('loc-count').textContent  = allLocations.length;
-    document.getElementById('walk-count').textContent = allWalks.length || '0';
-
-    // Build filters from categories
-    buildFilters();
-
-    // Render
-    renderList();
-    renderMarkers();
-
-  } catch(e) {
-    console.error('Init error:', e);
-    clearTimeout(loadingTimeout);
-    document.getElementById('loading').style.display = 'none';
-    if (!map) {
-      map = L.map('map', { center: [40.7829, -73.9654], zoom: 14, zoomControl: false });
-      L.control.zoom({ position: 'bottomright' }).addTo(map);
-      L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
-        attribution: '&copy; OpenStreetMap &copy; CARTO', maxZoom: 19,
-      }).addTo(map);
-    }
-    document.getElementById('result-meta').textContent = 'Database loading…';
-    document.getElementById('list').innerHTML = `
-      <div class="empty">
-        <span class="empty-icon">🗺️</span>
-        <strong>Map is ready!</strong><br>
-        <small style="color:#aaa">Database connecting…<br>Refresh in a moment if locations don't appear.</small>
-      </div>`;
-  }
-}
-
-// ─────────────────────────────────────────────────────────────
-//  MARKERS
-// ─────────────────────────────────────────────────────────────
-function makeIcon(color, size = 26) {
-  const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${size}" height="${Math.round(size*1.3)}" viewBox="0 0 26 34">
-    <ellipse cx="13" cy="32" rx="5" ry="1.8" fill="rgba(0,0,0,.2)"/>
-    <path d="M13 0C7.477 0 3 4.477 3 10c0 7.5 10 23 10 23S23 17.5 23 10C23 4.477 18.523 0 13 0z" fill="${color}"/>
+function makeIcon(color) {
+  const s = `<svg xmlns="http://www.w3.org/2000/svg" width="26" height="34" viewBox="0 0 26 34">
+    <ellipse cx="13" cy="32" rx="5" ry="2" fill="rgba(0,0,0,.2)"/>
+    <path d="M13 0C7.5 0 3 4.5 3 10c0 7.5 10 23 10 23S23 17.5 23 10C23 4.5 18.5 0 13 0z" fill="${color}"/>
     <circle cx="13" cy="10" r="4.5" fill="white" opacity=".85"/>
   </svg>`;
-  return L.divIcon({
-    html: svg, className: '',
-    iconSize: [size, Math.round(size*1.3)],
-    iconAnchor: [size/2, Math.round(size*1.3)],
-    popupAnchor: [0, -Math.round(size*1.3)],
-  });
+  return L.divIcon({ html: s, className: '', iconSize:[26,34], iconAnchor:[13,34], popupAnchor:[0,-34] });
 }
 
-function renderMarkers() {
-  markers.forEach(m => map.removeLayer(m));
-  markers = [];
+// ═══════════════════════════════════════════════════
+//  FILTERS
+// ═══════════════════════════════════════════════════
+const cats = ['all', ...Object.keys(COLORS)];
+const catLabels = { all:'All', landmark:'🏛️ Landmarks', film:'🎬 Film', lgbtq:'🏳️‍🌈 LGBTQ', history:'⚔️ History', music:'🎵 Music', nature:'🌿 Nature', civil:'✊ Civil Rights', facility:'🚻 Facilities' };
 
-  const data = activeListTab === 'film' ? allFilms :
-               activeListTab === 'water' ? allWater : allLocations;
-
-  const filtered = applyFilters(data);
-
-  filtered.forEach(loc => {
-    const lat = loc.lat || loc.start_lat;
-    const lon = loc.lon || loc.start_lon;
-    if (!lat || !lon) return;
-
-    const cat   = (loc.category || 'default').toLowerCase();
-    const color = CAT_COLORS[cat] || CAT_COLORS.default;
-    const m = L.marker([lat, lon], { icon: makeIcon(color) }).addTo(map);
-
-    const name  = loc.name || loc.movie_title || loc.title || '';
-    const sub   = loc.subcategory || loc.subtitle || loc.tagline || loc.landmark || '';
-    const id    = loc.id;
-
-    m.bindPopup(`
-      <div class="lp-inner">
-        <div class="lp-cat" style="color:${color}">${CAT_EMOJI[cat]||'📍'} ${cat}</div>
-        <div class="lp-name">${name}</div>
-        <div class="lp-sub">${sub}</div>
-        <button class="lp-btn" onclick="openDetail('${id}','${activeListTab}')">More info →</button>
-      </div>`, { maxWidth: 240 });
-
-    m.on('click', () => {
-      setSelected(id);
-      openDetail(id, activeListTab);
+const filterWrap = document.getElementById('filters');
+cats.forEach(cat => {
+  const el = document.createElement('div');
+  el.className = 'pill' + (cat === 'all' ? ' on' : '');
+  el.textContent = catLabels[cat] || cat;
+  if (cat === 'all') el.style.background = '#1a3d2b';
+  el.onclick = () => {
+    activeFilter = cat;
+    document.querySelectorAll('.pill').forEach(p => {
+      p.classList.remove('on');
+      p.style.background = '';
+      p.style.color = '';
     });
-
-    markers.push(m);
-  });
-}
-
-// ─────────────────────────────────────────────────────────────
-//  FILTERS & SEARCH
-// ─────────────────────────────────────────────────────────────
-function buildFilters() {
-  const cats = [...new Set(allLocations.map(l => l.category).filter(Boolean))].sort();
-  const wrap = document.getElementById('filters');
-  wrap.innerHTML = '';
-
-  const allChip = document.createElement('div');
-  allChip.className = 'chip on';
-  allChip.dataset.cat = 'all';
-  allChip.textContent = 'All';
-  allChip.style.background = '#1a3d2b';
-  allChip.onclick = () => setFilter('all', allChip);
-  wrap.appendChild(allChip);
-
-  cats.forEach(cat => {
-    const chip = document.createElement('div');
-    chip.className = 'chip';
-    chip.dataset.cat = cat;
-    chip.textContent = (CAT_EMOJI[cat] || '') + ' ' + cat;
-    chip.onclick = () => setFilter(cat, chip);
-    wrap.appendChild(chip);
-  });
-}
-
-function setFilter(cat, el) {
-  activeFilter = cat;
-  document.querySelectorAll('.chip').forEach(c => {
-    c.classList.remove('on');
-    c.style.background = '';
-    c.style.color = '';
-    c.style.borderColor = '';
-  });
-  el.classList.add('on');
-  const color = cat === 'all' ? '#1a3d2b' : (CAT_COLORS[cat] || '#1a3d2b');
-  el.style.background = color;
-  el.style.color = 'white';
-  renderList();
-  renderMarkers();
-}
-
-function applyFilters(data) {
-  const q = searchQ.toLowerCase();
-  return data.filter(item => {
-    const catOk = activeFilter === 'all' ||
-      (item.category || '').toLowerCase() === activeFilter;
-    if (!q) return catOk;
-    const text = [item.name, item.movie_title, item.description,
-                  item.story, item.landmark, ...(item.tags||[])].join(' ').toLowerCase();
-    return catOk && text.includes(q);
-  });
-}
-
-document.getElementById('search').addEventListener('input', e => {
-  searchQ = e.target.value.trim();
-  renderList();
-  renderMarkers();
+    el.classList.add('on');
+    el.style.background = cat === 'all' ? '#1a3d2b' : (COLORS[cat] || '#555');
+    el.style.color = 'white';
+    render();
+  };
+  filterWrap.appendChild(el);
 });
 
-// ─────────────────────────────────────────────────────────────
-//  LIST
-// ─────────────────────────────────────────────────────────────
-function setListTab(tab) {
-  activeListTab = tab;
-  ['locations','film','water'].forEach(t => {
-    document.getElementById('tab-'+t).classList.toggle('active', t === tab);
+document.getElementById('search').addEventListener('input', e => {
+  searchQ = e.target.value.trim().toLowerCase();
+  render();
+});
+
+// ═══════════════════════════════════════════════════
+//  RENDER
+// ═══════════════════════════════════════════════════
+function getVisible() {
+  return DATA.filter(d => {
+    const catOk = activeFilter === 'all' || d.cat === activeFilter;
+    const textOk = !searchQ || [d.name, d.sub, d.desc, d.story, ...(d.tags||[])].join(' ').toLowerCase().includes(searchQ);
+    return catOk && textOk;
   });
-  activeFilter = 'all';
-  searchQ = '';
-  document.getElementById('search').value = '';
-  renderList();
-  renderMarkers();
 }
 
-function renderList() {
+function render() {
+  const visible = getVisible();
+
+  // clear markers
+  Object.values(markerMap).forEach(m => map.removeLayer(m));
+  Object.keys(markerMap).forEach(k => delete markerMap[k]);
+
+  // add markers
+  visible.forEach(d => {
+    const color = COLORS[d.cat] || '#555';
+    const m = L.marker([d.lat, d.lon], { icon: makeIcon(color) }).addTo(map);
+    m.bindPopup(`
+      <div class="lp">
+        <div class="lp-cat" style="color:${color}">${catLabels[d.cat]||d.cat}</div>
+        <div class="lp-name">${d.name}</div>
+        <div class="lp-sub">${d.sub||''}</div>
+        <button class="lp-btn" onclick="openPanel(${d.id})">More info →</button>
+      </div>`, { maxWidth: 240 });
+    m.on('click', () => { setSelected(d.id); openPanel(d.id); });
+    markerMap[d.id] = m;
+  });
+
+  // render list
   const list = document.getElementById('list');
-  const meta = document.getElementById('result-meta');
-
-  if (activeListTab === 'locations') {
-    const filtered = applyFilters(allLocations);
-    meta.textContent = `${filtered.length} location${filtered.length !== 1 ? 's' : ''}`;
-    if (!filtered.length) {
-      list.innerHTML = '<div class="empty"><span class="empty-icon">🔍</span>No results found.</div>';
-      return;
-    }
-    list.innerHTML = '';
-    filtered.forEach(loc => {
-      const color = CAT_COLORS[(loc.category||'').toLowerCase()] || CAT_COLORS.default;
-      const el = document.createElement('div');
-      el.className = 'list-item' + (selectedId === loc.id ? ' selected' : '');
-      el.dataset.id = loc.id;
-      el.innerHTML = `
-        <div class="item-dot" style="background:${color}"></div>
-        <div class="item-body">
-          <div class="item-name">${loc.name}</div>
-          <div class="item-sub">${loc.subcategory || loc.category || ''}</div>
-        </div>`;
-      el.onclick = () => {
-        openDetail(loc.id, 'locations');
-        flyTo(loc.lat, loc.lon);
-      };
-      list.appendChild(el);
-    });
-
-  } else if (activeListTab === 'film') {
-    const filtered = applyFilters(allFilms);
-    meta.textContent = `${filtered.length} film${filtered.length !== 1 ? 's' : ''}`;
-    list.innerHTML = '';
-    filtered.forEach(f => {
-      const el = document.createElement('div');
-      el.className = 'list-item' + (selectedId === f.id ? ' selected' : '');
-      el.dataset.id = f.id;
-      el.innerHTML = `
-        <div class="item-dot" style="background:${CAT_COLORS.film}"></div>
-        <div class="item-body">
-          <div class="item-name">${f.movie_title} ${f.year ? '('+f.year+')' : ''}</div>
-          <div class="item-sub">${f.landmark || 'Central Park'}</div>
-        </div>`;
-      el.onclick = () => {
-        openDetail(f.id, 'film');
-        if (f.lat && f.lon) flyTo(f.lat, f.lon);
-      };
-      list.appendChild(el);
-    });
-
-  } else if (activeListTab === 'water') {
-    const filtered = allWater.filter(w => {
-      const q = searchQ.toLowerCase();
-      return !q || (w.name||'').toLowerCase().includes(q) || (w.notes||'').toLowerCase().includes(q);
-    });
-    meta.textContent = `${filtered.length} water bod${filtered.length !== 1 ? 'ies' : 'y'}`;
-    list.innerHTML = '';
-    filtered.forEach(w => {
-      const el = document.createElement('div');
-      el.className = 'list-item';
-      el.innerHTML = `
-        <div class="item-dot" style="background:${CAT_COLORS.water}"></div>
-        <div class="item-body">
-          <div class="item-name">${w.name}</div>
-          <div class="item-sub">${w.type || ''} · ${w.area_acres ? w.area_acres+' acres' : ''} · ${w.max_depth_ft ? 'max depth '+w.max_depth_ft+'ft' : ''}</div>
-        </div>`;
-      el.onclick = () => showWaterDetail(w);
-      list.appendChild(el);
-    });
-  }
+  const count = document.getElementById('count');
+  count.textContent = `${visible.length} location${visible.length !== 1 ? 's' : ''}`;
+  list.innerHTML = '';
+  visible.forEach(d => {
+    const color = COLORS[d.cat] || '#555';
+    const el = document.createElement('div');
+    el.className = 'item' + (selectedId === d.id ? ' on' : '');
+    el.dataset.id = d.id;
+    el.innerHTML = `<div class="dot" style="background:${color}"></div><div><div class="iname">${d.name}</div><div class="isub">${d.sub||''}</div></div>`;
+    el.onclick = () => {
+      openPanel(d.id);
+      map.flyTo([d.lat, d.lon], 16, { duration: 0.8 });
+      markerMap[d.id]?.openPopup();
+    };
+    list.appendChild(el);
+  });
 }
 
-// ─────────────────────────────────────────────────────────────
-//  DETAIL PANEL
-// ─────────────────────────────────────────────────────────────
-function openDetail(id, type) {
+// ═══════════════════════════════════════════════════
+//  PANEL
+// ═══════════════════════════════════════════════════
+function openPanel(id) {
   setSelected(id);
-  let item;
-  if (type === 'locations')    item = allLocations.find(l => l.id === id);
-  else if (type === 'film')    item = allFilms.find(f => f.id === id);
-  if (!item) return;
+  const d = DATA.find(x => x.id === id);
+  if (!d) return;
+  const color = COLORS[d.cat] || '#555';
 
-  const cat   = (item.category || type || 'landmark').toLowerCase();
-  const color = CAT_COLORS[cat] || CAT_COLORS.default;
-  const emoji = CAT_EMOJI[cat] || '📍';
+  document.getElementById('p-badge').textContent = catLabels[d.cat] || d.cat;
+  document.getElementById('p-badge').style.background = color;
+  document.getElementById('p-title').textContent = d.name;
+  document.getElementById('p-sub').textContent = d.sub || '';
+  document.getElementById('p-desc').textContent = d.desc || '';
+  document.getElementById('p-coords').textContent = `📍 ${d.lat}, ${d.lon}`;
 
-  document.getElementById('detail-badge').textContent = emoji + ' ' + cat;
-  document.getElementById('detail-badge').style.background = color;
-  document.getElementById('detail-title').textContent = item.name || item.movie_title || '';
-  document.getElementById('detail-subtitle').textContent = item.subcategory || item.tagline || (item.year ? item.year+'' : '') || '';
-
-  const tagsEl = document.getElementById('detail-tags');
+  const tagsEl = document.getElementById('p-tags');
   tagsEl.innerHTML = '';
-  (item.tags || []).forEach(t => {
-    const span = document.createElement('span');
-    span.className = 'dtag';
-    span.textContent = t;
-    tagsEl.appendChild(span);
-  });
+  (d.tags||[]).forEach(t => { const s = document.createElement('span'); s.className = 'ptag'; s.textContent = t; tagsEl.appendChild(s); });
 
-  document.getElementById('detail-desc').textContent = item.description || item.scene_desc || '';
-
-  const storyEl = document.getElementById('detail-story');
-  const storyTxt = document.getElementById('detail-story-text');
-  if (item.story || item.tour_story) {
-    storyTxt.textContent = item.story || item.tour_story;
+  const storyEl = document.getElementById('p-story');
+  if (d.story) {
+    document.getElementById('p-story-text').textContent = d.story;
     storyEl.style.display = 'block';
   } else {
     storyEl.style.display = 'none';
   }
 
-  const lat = item.lat; const lon = item.lon;
-  document.getElementById('detail-coords').textContent = lat && lon ? `📍 ${parseFloat(lat).toFixed(4)}, ${parseFloat(lon).toFixed(4)}` : '';
+  document.getElementById('panel').classList.add('open');
 
-  document.getElementById('detail').classList.add('open');
+  const li = document.querySelector(`.item[data-id="${id}"]`);
+  if (li) li.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
 }
 
-function showWaterDetail(w) {
-  document.getElementById('detail-badge').textContent = '💧 ' + (w.type || 'water');
-  document.getElementById('detail-badge').style.background = CAT_COLORS.water;
-  document.getElementById('detail-title').textContent = w.name;
-  document.getElementById('detail-subtitle').textContent = [
-    w.area_acres ? w.area_acres + ' acres' : '',
-    w.max_depth_ft ? 'max depth ' + w.max_depth_ft + ' ft' : '',
-    w.avg_depth_ft ? 'avg depth ' + w.avg_depth_ft + ' ft' : '',
-  ].filter(Boolean).join(' · ');
-  document.getElementById('detail-tags').innerHTML = '';
-  document.getElementById('detail-desc').textContent = w.notes || '';
-  document.getElementById('detail-story').style.display = 'none';
-  document.getElementById('detail-coords').textContent = '';
-  document.getElementById('detail').classList.add('open');
-}
-
-function closeDetail() {
-  document.getElementById('detail').classList.remove('open');
+function closePanel() {
+  document.getElementById('panel').classList.remove('open');
   selectedId = null;
-  document.querySelectorAll('.list-item').forEach(el => el.classList.remove('selected'));
+  document.querySelectorAll('.item').forEach(el => el.classList.remove('on'));
 }
 
 function setSelected(id) {
   selectedId = id;
-  document.querySelectorAll('.list-item').forEach(el => {
-    el.classList.toggle('selected', el.dataset.id === id);
-  });
+  document.querySelectorAll('.item').forEach(el => el.classList.toggle('on', parseInt(el.dataset.id) === id));
 }
 
-// ─────────────────────────────────────────────────────────────
-//  WALK PLAYER
-// ─────────────────────────────────────────────────────────────
-async function openWalkPlayer(walkId) {
-  const walk = allWalks.find(w => w.id === walkId);
-  if (!walk) return;
+window.openPanel = openPanel;
 
-  const { data: waypoints } = await supabase
-    .from('waypoints')
-    .select('*')
-    .eq('walk_id', walkId)
-    .order('order_index');
-
-  document.getElementById('player-title').textContent = walk.title;
-  document.getElementById('walk-player').classList.add('open');
-
-  // Init player map if needed
-  if (!playerMap) {
-    playerMap = L.map('player-map', { center: [40.7829, -73.9654], zoom: 15, zoomControl: false });
-    L.control.zoom({ position: 'bottomright' }).addTo(playerMap);
-    L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
-      attribution: '&copy; OpenStreetMap &copy; CARTO', maxZoom: 19,
-    }).addTo(playerMap);
-  } else {
-    setTimeout(() => playerMap.invalidateSize(), 100);
-  }
-
-  // Clear previous
-  playerMarkers.forEach(m => playerMap.removeLayer(m));
-  playerMarkers = [];
-
-  const wpEl = document.getElementById('player-waypoints');
-  wpEl.innerHTML = '';
-
-  const pts = [];
-  (waypoints || []).forEach((wp, i) => {
-    if (wp.lat && wp.lon) {
-      pts.push([wp.lat, wp.lon]);
-      const m = L.marker([wp.lat, wp.lon], { icon: makeIcon(CAT_COLORS.landmark, 28) })
-        .addTo(playerMap)
-        .bindPopup(`<div class="lp-inner"><div class="lp-name">${wp.title}</div><div class="lp-sub">${wp.subtitle||''}</div></div>`);
-      playerMarkers.push(m);
-    }
-
-    const card = document.createElement('div');
-    card.className = 'wp-card' + (i === 0 ? ' current' : '');
-    card.innerHTML = `
-      <div class="wp-num">${i+1}</div>
-      <div class="wp-name">${wp.title}</div>
-      <div class="wp-sub">${wp.subtitle||''}</div>`;
-    card.onclick = () => {
-      document.querySelectorAll('.wp-card').forEach(c => c.classList.remove('current'));
-      card.classList.add('current');
-      if (wp.lat && wp.lon) playerMap.setView([wp.lat, wp.lon], 16, { animate: true });
-    };
-    wpEl.appendChild(card);
-  });
-
-  if (pts.length) {
-    L.polyline(pts, { color: CAT_COLORS.landmark, weight: 3, opacity: .7, dashArray: '6 6' }).addTo(playerMap);
-    playerMap.fitBounds(pts, { padding: [30, 30] });
-  }
-
-  setTimeout(() => playerMap.invalidateSize(), 200);
-}
-
-function closeWalkPlayer() {
-  document.getElementById('walk-player').classList.remove('open');
-}
-
-// ─────────────────────────────────────────────────────────────
-//  NAV TABS
-// ─────────────────────────────────────────────────────────────
-function switchTab(tab) {
-  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
-  event.target.classList.add('active');
-
-  if (tab === 'walks') {
-    const list = document.getElementById('list');
-    document.getElementById('result-meta').textContent = `${allWalks.length} walk${allWalks.length !== 1 ? 's' : ''} available`;
-    document.getElementById('sidebar-header').style.display = 'none';
-    document.getElementById('tabs').style.display = 'none';
-
-    if (!allWalks.length) {
-      list.innerHTML = `<div class="empty">
-        <span class="empty-icon">🗺️</span>
-        <strong>No walks yet</strong><br>
-        The first walk will appear here once published.<br>
-        <small style="color:#aaa;margin-top:8px;display:block">Guides: contact us to add your walk</small>
-      </div>`;
-    } else {
-      list.innerHTML = '';
-      allWalks.forEach(walk => {
-        const guide = allGuides.find(g => g.id === walk.guide_id);
-        const card = document.createElement('div');
-        card.className = 'walk-card';
-        card.innerHTML = `
-          <div class="walk-title">${walk.title}</div>
-          ${guide ? `<div class="walk-guide">by ${guide.name}</div>` : ''}
-          <div class="walk-stats">
-            ${walk.distance_miles ? `<span class="walk-stat">🚶 ${walk.distance_miles}mi</span>` : ''}
-            ${walk.duration_mins ? `<span class="walk-stat">⏱ ${walk.duration_mins}min</span>` : ''}
-            ${walk.elevation_gain_ft ? `<span class="walk-stat">⛰ +${walk.elevation_gain_ft}ft</span>` : ''}
-            ${walk.difficulty ? `<span class="walk-stat">📊 ${walk.difficulty}</span>` : ''}
-          </div>
-          <div class="walk-tags">${(walk.tags||[]).map(t=>`<span class="walk-tag">${t}</span>`).join('')}</div>
-          <button class="walk-btn" onclick="openWalkPlayer('${walk.id}')">Start this walk →</button>
-        `;
-        list.appendChild(card);
-      });
-    }
-
-  } else if (tab === 'map') {
-    document.getElementById('sidebar-header').style.display = '';
-    document.getElementById('tabs').style.display = '';
-    renderList();
-
-  } else if (tab === 'about') {
-    document.getElementById('result-meta').textContent = 'About';
-    document.getElementById('sidebar-header').style.display = 'none';
-    document.getElementById('tabs').style.display = 'none';
-    const guide = allGuides[0];
-    document.getElementById('list').innerHTML = `
-      <div style="padding:20px 16px">
-        ${guide ? `
-          <div style="font-family:'Playfair Display',serif;font-size:18px;font-weight:700;margin-bottom:6px">${guide.name}</div>
-          <div style="font-size:12px;color:#2d6a4f;font-weight:500;margin-bottom:10px">${(guide.specialties||[]).join(' · ')}</div>
-          <div style="font-size:13px;line-height:1.7;color:#333;margin-bottom:16px">${guide.bio||''}</div>
-        ` : ''}
-        <div style="background:#f0f7f4;border-radius:8px;padding:14px;font-size:12px;line-height:1.6;color:#2a4a3a">
-          <strong style="display:block;font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:#2d6a4f;margin-bottom:6px">About This Platform</strong>
-          Central Park Boutique Tours is an open platform for professional guides to publish self-guided walks enriched with historical research, LGBTQ history, film locations, and ecological data.
-          <br><br>
-          Built on: <strong>centralpark.com</strong> data · <strong>NYC Open Data</strong> · LGBTQ Historic Sites Project · 16,000 GPS tree records
-        </div>
-        <div style="margin-top:14px;padding:12px 14px;border:1px solid #e0d8cc;border-radius:8px;font-size:12px">
-          <strong style="display:block;margin-bottom:4px">Are you a guide?</strong>
-          Contact us to publish your own walk on this platform.
-          <br><a href="https://centralparkboutiquetours.com" target="_blank" style="color:#2d6a4f;font-weight:500;display:block;margin-top:6px">centralparkboutiquetours.com →</a>
-        </div>
-      </div>`;
-  }
-}
-
-// ─────────────────────────────────────────────────────────────
-//  HELPERS
-// ─────────────────────────────────────────────────────────────
-function flyTo(lat, lon, zoom = 16) {
-  if (lat && lon) map.flyTo([lat, lon], zoom, { duration: 0.8 });
-}
-
-window.openDetail      = openDetail;
-window.openWalkPlayer  = openWalkPlayer;
-
-// ─────────────────────────────────────────────────────────────
-//  START — init map immediately, load DB data when Supabase ready
-// ─────────────────────────────────────────────────────────────
-
-// Called when Supabase CDN finishes loading
-window.tryLoadData = async function() {
-  if (!window.supabase || !window.supabaseReady) return;
-  try {
-    const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY, {
-      auth: { persistSession: false, autoRefreshToken: false }
-    });
-    const safe = async (q) => { try { const r = await q; return r.data || []; } catch(e) { return []; }};
-    const [l,f,w,wk,g] = await Promise.all([
-      safe(sb.from('locations').select('*').order('name')),
-      safe(sb.from('film_locations').select('*').order('year')),
-      safe(sb.from('water_bodies').select('*').order('name')),
-      safe(sb.from('walks').select('*').eq('is_published',true).order('title')),
-      safe(sb.from('guides').select('*').eq('is_active',true)),
-    ]);
-    allLocations = l; allFilms = f.filter(x=>x.lat&&x.lon);
-    allWater = w; allWalks = wk; allGuides = g;
-    document.getElementById('loc-count').textContent  = allLocations.length;
-    document.getElementById('walk-count').textContent = allWalks.length || '0';
-    buildFilters(); renderList(); renderMarkers();
-  } catch(e) { console.warn('DB load failed silently:', e); }
-};
-
-init();
-</script>
-</body>
-</html>
-  --transition: all 0.25s cubic-bezier(.4,0,.2,1);
-}
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-html, body { height: 100%; overflow: hidden; }
-body {
-  font-family: 'DM Sans', sans-serif;
-  background: var(--green-900);
-  color: var(--text-900);
-  display: flex;
-  flex-direction: column;
-}
-
-/* ── HEADER ──────────────────────────────────────────────── */
-#header {
-  height: var(--header-h);
-  background: var(--green-800);
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 0 20px;
-  flex-shrink: 0;
-  z-index: 1000;
-  border-bottom: 1px solid rgba(255,255,255,.07);
-}
-.header-brand {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-.header-logo {
-  width: 32px;
-  height: 32px;
-  background: var(--green-600);
-  border-radius: 8px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 16px;
-}
-.header-title {
-  font-family: 'Playfair Display', serif;
-  font-size: 17px;
-  font-weight: 700;
-  color: var(--cream);
-  letter-spacing: .01em;
-}
-.header-title span { color: var(--green-400); }
-.header-nav {
-  display: flex;
-  gap: 4px;
-}
-.nav-btn {
-  padding: 6px 14px;
-  border-radius: 7px;
-  font-size: 12px;
-  font-weight: 500;
-  color: rgba(245,240,232,.6);
-  background: none;
-  border: none;
-  cursor: pointer;
-  transition: var(--transition);
-  font-family: 'DM Sans', sans-serif;
-}
-.nav-btn:hover, .nav-btn.active {
-  background: rgba(255,255,255,.08);
-  color: var(--cream);
-}
-.nav-btn.active { color: var(--green-400); }
-
-/* ── LAYOUT ──────────────────────────────────────────────── */
-#main {
-  flex: 1;
-  display: flex;
-  overflow: hidden;
-  position: relative;
-}
-
-/* ── SIDEBAR ─────────────────────────────────────────────── */
-#sidebar {
-  width: var(--sidebar-w);
-  background: var(--cream);
-  display: flex;
-  flex-direction: column;
-  flex-shrink: 0;
-  overflow: hidden;
-  border-right: 1px solid var(--cream-dark);
-  transition: var(--transition);
-}
-#sidebar-header {
-  padding: 14px 16px 10px;
-  background: var(--cream);
-  border-bottom: 1px solid var(--cream-dark);
-  flex-shrink: 0;
-}
-.search-wrap {
-  position: relative;
-  margin-bottom: 10px;
-}
-#search {
-  width: 100%;
-  padding: 9px 12px 9px 36px;
-  border: 1.5px solid rgba(0,0,0,.11);
-  border-radius: 8px;
-  font-family: 'DM Sans', sans-serif;
-  font-size: 13px;
-  background: white;
-  color: var(--text-900);
-  outline: none;
-  transition: border-color .2s;
-}
-#search:focus { border-color: var(--green-600); }
-.search-icon {
-  position: absolute;
-  left: 11px;
-  top: 50%;
-  transform: translateY(-50%);
-  font-size: 13px;
-  opacity: .35;
-  pointer-events: none;
-}
-.filter-row {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 5px;
-}
-.chip {
-  padding: 4px 10px;
-  border-radius: 20px;
-  font-size: 11px;
-  font-weight: 500;
-  cursor: pointer;
-  border: 1.5px solid rgba(0,0,0,.1);
-  background: white;
-  color: var(--text-400);
-  transition: var(--transition);
-  white-space: nowrap;
-  user-select: none;
-}
-.chip:hover { border-color: var(--green-600); color: var(--green-600); }
-.chip.on { color: white; border-color: transparent; }
-
-#result-meta {
-  padding: 8px 16px 3px;
-  font-size: 11px;
-  color: var(--text-400);
-  text-transform: uppercase;
-  letter-spacing: .07em;
-  flex-shrink: 0;
-}
-#list {
-  flex: 1;
-  overflow-y: auto;
-  padding-bottom: 16px;
-}
-#list::-webkit-scrollbar { width: 3px; }
-#list::-webkit-scrollbar-thumb { background: rgba(0,0,0,.12); border-radius: 2px; }
-
-.list-item {
-  padding: 11px 16px;
-  cursor: pointer;
-  border-bottom: 1px solid rgba(0,0,0,.04);
-  transition: background .12s;
-  display: flex;
-  align-items: flex-start;
-  gap: 10px;
-}
-.list-item:hover { background: rgba(0,0,0,.035); }
-.list-item.selected { background: rgba(45,106,79,.09); }
-.item-dot {
-  width: 9px; height: 9px;
-  border-radius: 50%;
-  flex-shrink: 0;
-  margin-top: 4px;
-}
-.item-body { flex: 1; min-width: 0; }
-.item-name {
-  font-size: 13px;
-  font-weight: 500;
-  color: var(--text-900);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  line-height: 1.3;
-}
-.item-sub {
-  font-size: 11px;
-  color: var(--text-400);
-  margin-top: 1px;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-/* walks list */
-.walk-card {
-  margin: 8px 12px;
-  border-radius: 10px;
-  background: white;
-  border: 1px solid var(--cream-dark);
-  padding: 12px 14px;
-  cursor: pointer;
-  transition: var(--transition);
-}
-.walk-card:hover { box-shadow: var(--shadow-sm); transform: translateY(-1px); }
-.walk-title {
-  font-family: 'Playfair Display', serif;
-  font-size: 14px;
-  font-weight: 600;
-  color: var(--text-900);
-  margin-bottom: 4px;
-  line-height: 1.3;
-}
-.walk-guide {
-  font-size: 11px;
-  color: var(--green-600);
-  font-weight: 500;
-  margin-bottom: 6px;
-}
-.walk-stats {
-  display: flex;
-  gap: 10px;
-  font-size: 11px;
-  color: var(--text-400);
-}
-.walk-stat { display: flex; align-items: center; gap: 3px; }
-.walk-tags {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 4px;
-  margin-top: 8px;
-}
-.walk-tag {
-  padding: 2px 7px;
-  background: var(--cream);
-  border-radius: 4px;
-  font-size: 10px;
-  color: var(--text-400);
-}
-.walk-btn {
-  display: block;
-  width: 100%;
-  margin-top: 10px;
-  padding: 8px;
-  background: var(--green-600);
-  color: white;
-  border: none;
-  border-radius: 7px;
-  font-size: 12px;
-  font-weight: 500;
-  cursor: pointer;
-  font-family: 'DM Sans', sans-serif;
-  transition: background .15s;
-}
-.walk-btn:hover { background: var(--green-800); }
-
-/* empty state */
-.empty {
-  padding: 40px 20px;
-  text-align: center;
-  color: var(--text-400);
-  font-size: 13px;
-  line-height: 1.6;
-}
-.empty-icon { font-size: 32px; display: block; margin-bottom: 10px; }
-
-/* ── MAP AREA ─────────────────────────────────────────────── */
-#map-area {
-  flex: 1;
-  position: relative;
-  overflow: hidden;
-}
-#map {
-  width: 100%;
-  height: 100%;
-}
-
-/* map overlay stats */
-#map-stats {
-  position: absolute;
-  top: 12px;
-  right: 12px;
-  z-index: 500;
-  display: flex;
-  flex-direction: column;
-  gap: 5px;
-  align-items: flex-end;
-}
-.stat-pill {
-  background: rgba(13,36,22,.85);
-  color: var(--cream);
-  padding: 5px 11px;
-  border-radius: 20px;
-  font-size: 11px;
-  font-weight: 500;
-  backdrop-filter: blur(8px);
-  white-space: nowrap;
-}
-.stat-pill b { color: var(--green-400); }
-
-/* ── DETAIL PANEL ─────────────────────────────────────────── */
-#detail {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  max-height: 0;
-  overflow: hidden;
-  background: white;
-  z-index: 600;
-  transition: max-height .35s cubic-bezier(.4,0,.2,1);
-  border-top: 3px solid var(--green-600);
-  box-shadow: 0 -6px 30px rgba(0,0,0,.15);
-}
-#detail.open { max-height: var(--panel-h); }
-#detail-inner {
-  padding: 18px 22px 22px;
-  max-height: var(--panel-h);
-  overflow-y: auto;
-}
-#detail-inner::-webkit-scrollbar { width: 3px; }
-#detail-inner::-webkit-scrollbar-thumb { background: rgba(0,0,0,.12); border-radius: 2px; }
-#detail-close {
-  position: absolute;
-  top: 12px; right: 14px;
-  background: rgba(0,0,0,.06);
-  border: none;
-  width: 28px; height: 28px;
-  border-radius: 50%;
-  font-size: 16px;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: var(--text-400);
-  transition: background .15s;
-}
-#detail-close:hover { background: rgba(0,0,0,.12); color: var(--text-900); }
-#detail-badge {
-  display: inline-flex;
-  align-items: center;
-  gap: 5px;
-  padding: 3px 10px;
-  border-radius: 20px;
-  font-size: 11px;
-  font-weight: 600;
-  letter-spacing: .06em;
-  text-transform: uppercase;
-  color: white;
-  margin-bottom: 8px;
-}
-#detail-title {
-  font-family: 'Playfair Display', serif;
-  font-size: 22px;
-  font-weight: 700;
-  color: var(--text-900);
-  line-height: 1.2;
-  margin-bottom: 4px;
-}
-#detail-subtitle {
-  font-size: 13px;
-  color: var(--text-400);
-  margin-bottom: 10px;
-}
-#detail-tags {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 4px;
-  margin-bottom: 12px;
-}
-.dtag {
-  padding: 2px 8px;
-  background: var(--cream);
-  border-radius: 4px;
-  font-size: 10px;
-  color: var(--text-400);
-  letter-spacing: .03em;
-}
-#detail-desc {
-  font-size: 13px;
-  line-height: 1.75;
-  color: #333;
-  margin-bottom: 12px;
-}
-#detail-story {
-  background: #f0f7f4;
-  border-left: 3px solid var(--green-600);
-  padding: 10px 14px;
-  border-radius: 0 8px 8px 0;
-  font-size: 12.5px;
-  font-style: italic;
-  line-height: 1.65;
-  color: #2a4a3a;
-  margin-bottom: 10px;
-}
-#detail-story strong {
-  display: block;
-  font-style: normal;
-  font-size: 10px;
-  text-transform: uppercase;
-  letter-spacing: .08em;
-  color: var(--green-600);
-  margin-bottom: 4px;
-}
-#detail-coords {
-  font-size: 11px;
-  color: var(--text-300);
-  font-family: monospace;
-}
-
-/* ── WALK PLAYER ─────────────────────────────────────────── */
-#walk-player {
-  position: absolute;
-  top: 0; left: 0; right: 0; bottom: 0;
-  background: var(--cream);
-  z-index: 700;
-  display: none;
-  flex-direction: column;
-}
-#walk-player.open { display: flex; }
-#player-header {
-  background: var(--green-800);
-  padding: 14px 18px;
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  flex-shrink: 0;
-}
-#player-back {
-  background: rgba(255,255,255,.1);
-  border: none;
-  color: white;
-  width: 32px; height: 32px;
-  border-radius: 8px;
-  font-size: 16px;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-}
-#player-back:hover { background: rgba(255,255,255,.18); }
-#player-title {
-  font-family: 'Playfair Display', serif;
-  font-size: 16px;
-  color: white;
-  font-weight: 600;
-  flex: 1;
-}
-#player-map { flex: 1; }
-#player-waypoints {
-  height: 200px;
-  overflow-x: auto;
-  overflow-y: hidden;
-  display: flex;
-  gap: 10px;
-  padding: 12px 14px;
-  background: white;
-  border-top: 1px solid var(--cream-dark);
-  flex-shrink: 0;
-}
-#player-waypoints::-webkit-scrollbar { height: 3px; }
-#player-waypoints::-webkit-scrollbar-thumb { background: rgba(0,0,0,.12); border-radius: 2px; }
-.wp-card {
-  min-width: 160px;
-  max-width: 160px;
-  background: var(--cream);
-  border-radius: 8px;
-  padding: 10px 12px;
-  cursor: pointer;
-  border: 2px solid transparent;
-  transition: var(--transition);
-  flex-shrink: 0;
-}
-.wp-card:hover { border-color: var(--green-400); }
-.wp-card.current { border-color: var(--green-600); background: white; }
-.wp-num {
-  width: 22px; height: 22px;
-  border-radius: 50%;
-  background: var(--green-600);
-  color: white;
-  font-size: 11px;
-  font-weight: 700;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin-bottom: 6px;
-}
-.wp-name {
-  font-size: 12px;
-  font-weight: 500;
-  color: var(--text-900);
-  line-height: 1.3;
-  margin-bottom: 3px;
-}
-.wp-sub { font-size: 10px; color: var(--text-400); line-height: 1.3; }
-
-/* loading overlay */
-#loading {
-  position: absolute;
-  inset: 0;
-  background: var(--green-900);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 9999;
-  flex-direction: column;
-  gap: 16px;
-}
-#loading h2 {
-  font-family: 'Playfair Display', serif;
-  color: var(--cream);
-  font-size: 22px;
-  font-weight: 400;
-}
-#loading p { font-size: 13px; color: var(--green-400); }
-.spinner {
-  width: 36px; height: 36px;
-  border: 3px solid rgba(255,255,255,.1);
-  border-top-color: var(--green-400);
-  border-radius: 50%;
-  animation: spin .8s linear infinite;
-}
-@keyframes spin { to { transform: rotate(360deg); } }
-
-/* tabs */
-#tabs {
-  display: flex;
-  background: var(--cream-dark);
-  border-bottom: 1px solid rgba(0,0,0,.08);
-  flex-shrink: 0;
-}
-.tab {
-  flex: 1;
-  padding: 9px 8px;
-  font-size: 12px;
-  font-weight: 500;
-  text-align: center;
-  cursor: pointer;
-  color: var(--text-400);
-  border-bottom: 2px solid transparent;
-  transition: var(--transition);
-  user-select: none;
-}
-.tab.active {
-  color: var(--green-700);
-  border-bottom-color: var(--green-600);
-  background: var(--cream);
-}
-
-/* popup */
-.lp-inner { padding: 10px 14px; min-width: 160px; max-width: 220px; }
-.lp-cat { font-size: 10px; font-weight: 600; letter-spacing: .07em; text-transform: uppercase; margin-bottom: 3px; }
-.lp-name { font-family: 'Playfair Display', serif; font-size: 14px; font-weight: 700; color: var(--text-900); margin-bottom: 4px; line-height: 1.2; }
-.lp-sub { font-size: 11px; color: var(--text-400); line-height: 1.4; margin-bottom: 8px; }
-.lp-btn { padding: 5px 12px; background: var(--green-600); color: white; border: none; border-radius: 5px; font-size: 11px; font-weight: 500; cursor: pointer; font-family: 'DM Sans', sans-serif; }
-.lp-btn:hover { background: var(--green-800); }
-
-.leaflet-popup-content-wrapper { border-radius: 10px; box-shadow: var(--shadow-md); padding: 0; overflow: hidden; }
-.leaflet-popup-content { margin: 0; }
-.leaflet-popup-tip-container { display: none; }
-.leaflet-control-zoom { border: none !important; box-shadow: var(--shadow-sm) !important; }
-.leaflet-control-zoom a { border-radius: 6px !important; margin-bottom: 3px !important; font-weight: 400 !important; border: 1px solid rgba(0,0,0,.08) !important; }
-
-@media (max-width: 680px) {
-  #sidebar { display: none; }
-  #detail { left: 0; }
-}
-</style>
-</head>
-<body>
-
-<div id="loading">
-  <div class="spinner"></div>
-  <h2>Central Park</h2>
-  <p>Loading your guide…</p>
-</div>
-
-<div id="header">
-  <div class="header-brand">
-    <div class="header-logo">🌳</div>
-    <div class="header-title">Central Park <span>Boutique Tours</span></div>
-  </div>
-  <div class="header-nav">
-    <button class="nav-btn active" onclick="switchTab('map')">Map</button>
-    <button class="nav-btn" onclick="switchTab('walks')">Walks</button>
-    <button class="nav-btn" onclick="switchTab('about')">About</button>
-  </div>
-</div>
-
-<div id="main">
-  <!-- SIDEBAR -->
-  <div id="sidebar">
-    <div id="tabs">
-      <div class="tab active" onclick="setListTab('locations')" id="tab-locations">📍 Locations</div>
-      <div class="tab" onclick="setListTab('film')" id="tab-film">🎬 Films</div>
-      <div class="tab" onclick="setListTab('water')" id="tab-water">💧 Water</div>
-    </div>
-    <div id="sidebar-header">
-      <div class="search-wrap">
-        <span class="search-icon">🔍</span>
-        <input id="search" type="text" placeholder="Search locations, films, history…">
-      </div>
-      <div class="filter-row" id="filters"></div>
-    </div>
-    <div id="result-meta">Loading…</div>
-    <div id="list"></div>
-  </div>
-
-  <!-- MAP -->
-  <div id="map-area">
-    <div id="map"></div>
-
-    <div id="map-stats">
-      <div class="stat-pill"><b id="loc-count">—</b> locations</div>
-      <div class="stat-pill"><b id="walk-count">—</b> walks</div>
-    </div>
-
-    <!-- DETAIL PANEL -->
-    <div id="detail">
-      <button id="detail-close" onclick="closeDetail()">×</button>
-      <div id="detail-inner">
-        <div id="detail-badge"></div>
-        <div id="detail-title"></div>
-        <div id="detail-subtitle"></div>
-        <div id="detail-tags"></div>
-        <div id="detail-desc"></div>
-        <div id="detail-story"><strong>Tour Story</strong><span id="detail-story-text"></span></div>
-        <div id="detail-coords"></div>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- WALK PLAYER (full screen overlay) -->
-<div id="walk-player">
-  <div id="player-header">
-    <button id="player-back" onclick="closeWalkPlayer()">←</button>
-    <div id="player-title">Walk</div>
-  </div>
-  <div id="player-map"></div>
-  <div id="player-waypoints"></div>
-</div>
-
-<script>
-// ─────────────────────────────────────────────────────────────
-//  CONFIG — reads from environment variables injected by Vercel
-//  or falls back to window globals for local development
-// ─────────────────────────────────────────────────────────────
-const SUPABASE_URL  = 'https://xwsaaexelggzjawnczlu.supabase.co';
-const SUPABASE_KEY  = 'sb_publishable_oYA2Ac-k0f79Did4sX2IIQ_DqR6suwY';
-
-const CAT_COLORS = {
-  landmark: '#2d6a4f',
-  film:     '#1565C0',
-  lgbtq:    '#6A0DAD',
-  history:  '#8B3A0F',
-  music:    '#E65100',
-  nature:   '#1A5C38',
-  facility: '#00695C',
-  civil:    '#B71C1C',
-  water:    '#0277BD',
-  default:  '#555',
-};
-
-const CAT_EMOJI = {
-  landmark:'🏛️', film:'🎬', lgbtq:'🏳️‍🌈',
-  history:'⚔️', music:'🎵', nature:'🌿',
-  facility:'🚻', civil:'✊', water:'💧',
-};
-
-// ─────────────────────────────────────────────────────────────
-//  STATE
-// ─────────────────────────────────────────────────────────────
-let supabase, map, playerMap;
-let allLocations = [], allFilms = [], allWater = [], allWalks = [], allGuides = [];
-let markers = [], playerMarkers = [];
-let activeFilter = 'all';
-let activeListTab = 'locations';
-let searchQ = '';
-let selectedId = null;
-
-// ─────────────────────────────────────────────────────────────
-//  INIT
-// ─────────────────────────────────────────────────────────────
-async function init() {
-  // ALWAYS hide loading after 5 seconds no matter what
-  const loadingTimeout = setTimeout(() => {
-    document.getElementById('loading').style.display = 'none';
-    renderList();
-    renderMarkers();
-  }, 5000);
-
-  try {
-    // Step 1: Start map IMMEDIATELY — don't wait for DB
-    map = L.map('map', {
-      center: [40.7829, -73.9654],
-      zoom: 14,
-      zoomControl: false,
-    });
-    L.control.zoom({ position: 'bottomright' }).addTo(map);
-    L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
-      attribution: '&copy; OpenStreetMap &copy; CARTO',
-      maxZoom: 19,
-    }).addTo(map);
-
-    // Map is ready — hide loading screen NOW
-    clearTimeout(loadingTimeout);
-    document.getElementById('loading').style.display = 'none';
-
-    // Step 2: Try to connect to Supabase
-    if (!window.supabase) {
-      console.warn('Supabase library not available — showing empty state');
-      renderList(); renderMarkers();
-      return;
-    }
-
-    supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY, {
-      auth: { persistSession: false, autoRefreshToken: false }
-    });
-
-    // Step 3: Load data with individual error handling
-    const safeQuery = async (query) => {
-      try { const r = await query; return r.data || []; }
-      catch(e) { console.warn('Query failed:', e); return []; }
-    };
-
-    const [locsData, filmsData, waterData, walksData, guidesData] = await Promise.all([
-      safeQuery(supabase.from('locations').select('*').order('name')),
-      safeQuery(supabase.from('film_locations').select('*').order('year')),
-      safeQuery(supabase.from('water_bodies').select('*').order('name')),
-      safeQuery(supabase.from('walks').select('*').eq('is_published', true).order('title')),
-      safeQuery(supabase.from('guides').select('*').eq('is_active', true)),
-    ]);
-
-    allLocations = locsData;
-    allFilms     = filmsData.filter(f => f.lat && f.lon);
-    allWater     = waterData;
-    allWalks     = walksData;
-    allGuides    = guidesData;
-
-    // Update stats
-    document.getElementById('loc-count').textContent  = allLocations.length;
-    document.getElementById('walk-count').textContent = allWalks.length || '0';
-
-    // Build filters from categories
-    buildFilters();
-
-    // Render
-    renderList();
-    renderMarkers();
-
-  } catch(e) {
-    console.error('Init error:', e);
-    clearTimeout(loadingTimeout);
-    document.getElementById('loading').style.display = 'none';
-    if (!map) {
-      map = L.map('map', { center: [40.7829, -73.9654], zoom: 14, zoomControl: false });
-      L.control.zoom({ position: 'bottomright' }).addTo(map);
-      L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
-        attribution: '&copy; OpenStreetMap &copy; CARTO', maxZoom: 19,
-      }).addTo(map);
-    }
-    document.getElementById('result-meta').textContent = 'Database loading…';
-    document.getElementById('list').innerHTML = `
-      <div class="empty">
-        <span class="empty-icon">🗺️</span>
-        <strong>Map is ready!</strong><br>
-        <small style="color:#aaa">Database connecting…<br>Refresh in a moment if locations don't appear.</small>
-      </div>`;
-  }
-}
-
-// ─────────────────────────────────────────────────────────────
-//  MARKERS
-// ─────────────────────────────────────────────────────────────
-function makeIcon(color, size = 26) {
-  const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${size}" height="${Math.round(size*1.3)}" viewBox="0 0 26 34">
-    <ellipse cx="13" cy="32" rx="5" ry="1.8" fill="rgba(0,0,0,.2)"/>
-    <path d="M13 0C7.477 0 3 4.477 3 10c0 7.5 10 23 10 23S23 17.5 23 10C23 4.477 18.523 0 13 0z" fill="${color}"/>
-    <circle cx="13" cy="10" r="4.5" fill="white" opacity=".85"/>
-  </svg>`;
-  return L.divIcon({
-    html: svg, className: '',
-    iconSize: [size, Math.round(size*1.3)],
-    iconAnchor: [size/2, Math.round(size*1.3)],
-    popupAnchor: [0, -Math.round(size*1.3)],
-  });
-}
-
-function renderMarkers() {
-  markers.forEach(m => map.removeLayer(m));
-  markers = [];
-
-  const data = activeListTab === 'film' ? allFilms :
-               activeListTab === 'water' ? allWater : allLocations;
-
-  const filtered = applyFilters(data);
-
-  filtered.forEach(loc => {
-    const lat = loc.lat || loc.start_lat;
-    const lon = loc.lon || loc.start_lon;
-    if (!lat || !lon) return;
-
-    const cat   = (loc.category || 'default').toLowerCase();
-    const color = CAT_COLORS[cat] || CAT_COLORS.default;
-    const m = L.marker([lat, lon], { icon: makeIcon(color) }).addTo(map);
-
-    const name  = loc.name || loc.movie_title || loc.title || '';
-    const sub   = loc.subcategory || loc.subtitle || loc.tagline || loc.landmark || '';
-    const id    = loc.id;
-
-    m.bindPopup(`
-      <div class="lp-inner">
-        <div class="lp-cat" style="color:${color}">${CAT_EMOJI[cat]||'📍'} ${cat}</div>
-        <div class="lp-name">${name}</div>
-        <div class="lp-sub">${sub}</div>
-        <button class="lp-btn" onclick="openDetail('${id}','${activeListTab}')">More info →</button>
-      </div>`, { maxWidth: 240 });
-
-    m.on('click', () => {
-      setSelected(id);
-      openDetail(id, activeListTab);
-    });
-
-    markers.push(m);
-  });
-}
-
-// ─────────────────────────────────────────────────────────────
-//  FILTERS & SEARCH
-// ─────────────────────────────────────────────────────────────
-function buildFilters() {
-  const cats = [...new Set(allLocations.map(l => l.category).filter(Boolean))].sort();
-  const wrap = document.getElementById('filters');
-  wrap.innerHTML = '';
-
-  const allChip = document.createElement('div');
-  allChip.className = 'chip on';
-  allChip.dataset.cat = 'all';
-  allChip.textContent = 'All';
-  allChip.style.background = '#1a3d2b';
-  allChip.onclick = () => setFilter('all', allChip);
-  wrap.appendChild(allChip);
-
-  cats.forEach(cat => {
-    const chip = document.createElement('div');
-    chip.className = 'chip';
-    chip.dataset.cat = cat;
-    chip.textContent = (CAT_EMOJI[cat] || '') + ' ' + cat;
-    chip.onclick = () => setFilter(cat, chip);
-    wrap.appendChild(chip);
-  });
-}
-
-function setFilter(cat, el) {
-  activeFilter = cat;
-  document.querySelectorAll('.chip').forEach(c => {
-    c.classList.remove('on');
-    c.style.background = '';
-    c.style.color = '';
-    c.style.borderColor = '';
-  });
-  el.classList.add('on');
-  const color = cat === 'all' ? '#1a3d2b' : (CAT_COLORS[cat] || '#1a3d2b');
-  el.style.background = color;
-  el.style.color = 'white';
-  renderList();
-  renderMarkers();
-}
-
-function applyFilters(data) {
-  const q = searchQ.toLowerCase();
-  return data.filter(item => {
-    const catOk = activeFilter === 'all' ||
-      (item.category || '').toLowerCase() === activeFilter;
-    if (!q) return catOk;
-    const text = [item.name, item.movie_title, item.description,
-                  item.story, item.landmark, ...(item.tags||[])].join(' ').toLowerCase();
-    return catOk && text.includes(q);
-  });
-}
-
-document.getElementById('search').addEventListener('input', e => {
-  searchQ = e.target.value.trim();
-  renderList();
-  renderMarkers();
-});
-
-// ─────────────────────────────────────────────────────────────
-//  LIST
-// ─────────────────────────────────────────────────────────────
-function setListTab(tab) {
-  activeListTab = tab;
-  ['locations','film','water'].forEach(t => {
-    document.getElementById('tab-'+t).classList.toggle('active', t === tab);
-  });
-  activeFilter = 'all';
-  searchQ = '';
-  document.getElementById('search').value = '';
-  renderList();
-  renderMarkers();
-}
-
-function renderList() {
-  const list = document.getElementById('list');
-  const meta = document.getElementById('result-meta');
-
-  if (activeListTab === 'locations') {
-    const filtered = applyFilters(allLocations);
-    meta.textContent = `${filtered.length} location${filtered.length !== 1 ? 's' : ''}`;
-    if (!filtered.length) {
-      list.innerHTML = '<div class="empty"><span class="empty-icon">🔍</span>No results found.</div>';
-      return;
-    }
-    list.innerHTML = '';
-    filtered.forEach(loc => {
-      const color = CAT_COLORS[(loc.category||'').toLowerCase()] || CAT_COLORS.default;
-      const el = document.createElement('div');
-      el.className = 'list-item' + (selectedId === loc.id ? ' selected' : '');
-      el.dataset.id = loc.id;
-      el.innerHTML = `
-        <div class="item-dot" style="background:${color}"></div>
-        <div class="item-body">
-          <div class="item-name">${loc.name}</div>
-          <div class="item-sub">${loc.subcategory || loc.category || ''}</div>
-        </div>`;
-      el.onclick = () => {
-        openDetail(loc.id, 'locations');
-        flyTo(loc.lat, loc.lon);
-      };
-      list.appendChild(el);
-    });
-
-  } else if (activeListTab === 'film') {
-    const filtered = applyFilters(allFilms);
-    meta.textContent = `${filtered.length} film${filtered.length !== 1 ? 's' : ''}`;
-    list.innerHTML = '';
-    filtered.forEach(f => {
-      const el = document.createElement('div');
-      el.className = 'list-item' + (selectedId === f.id ? ' selected' : '');
-      el.dataset.id = f.id;
-      el.innerHTML = `
-        <div class="item-dot" style="background:${CAT_COLORS.film}"></div>
-        <div class="item-body">
-          <div class="item-name">${f.movie_title} ${f.year ? '('+f.year+')' : ''}</div>
-          <div class="item-sub">${f.landmark || 'Central Park'}</div>
-        </div>`;
-      el.onclick = () => {
-        openDetail(f.id, 'film');
-        if (f.lat && f.lon) flyTo(f.lat, f.lon);
-      };
-      list.appendChild(el);
-    });
-
-  } else if (activeListTab === 'water') {
-    const filtered = allWater.filter(w => {
-      const q = searchQ.toLowerCase();
-      return !q || (w.name||'').toLowerCase().includes(q) || (w.notes||'').toLowerCase().includes(q);
-    });
-    meta.textContent = `${filtered.length} water bod${filtered.length !== 1 ? 'ies' : 'y'}`;
-    list.innerHTML = '';
-    filtered.forEach(w => {
-      const el = document.createElement('div');
-      el.className = 'list-item';
-      el.innerHTML = `
-        <div class="item-dot" style="background:${CAT_COLORS.water}"></div>
-        <div class="item-body">
-          <div class="item-name">${w.name}</div>
-          <div class="item-sub">${w.type || ''} · ${w.area_acres ? w.area_acres+' acres' : ''} · ${w.max_depth_ft ? 'max depth '+w.max_depth_ft+'ft' : ''}</div>
-        </div>`;
-      el.onclick = () => showWaterDetail(w);
-      list.appendChild(el);
-    });
-  }
-}
-
-// ─────────────────────────────────────────────────────────────
-//  DETAIL PANEL
-// ─────────────────────────────────────────────────────────────
-function openDetail(id, type) {
-  setSelected(id);
-  let item;
-  if (type === 'locations')    item = allLocations.find(l => l.id === id);
-  else if (type === 'film')    item = allFilms.find(f => f.id === id);
-  if (!item) return;
-
-  const cat   = (item.category || type || 'landmark').toLowerCase();
-  const color = CAT_COLORS[cat] || CAT_COLORS.default;
-  const emoji = CAT_EMOJI[cat] || '📍';
-
-  document.getElementById('detail-badge').textContent = emoji + ' ' + cat;
-  document.getElementById('detail-badge').style.background = color;
-  document.getElementById('detail-title').textContent = item.name || item.movie_title || '';
-  document.getElementById('detail-subtitle').textContent = item.subcategory || item.tagline || (item.year ? item.year+'' : '') || '';
-
-  const tagsEl = document.getElementById('detail-tags');
-  tagsEl.innerHTML = '';
-  (item.tags || []).forEach(t => {
-    const span = document.createElement('span');
-    span.className = 'dtag';
-    span.textContent = t;
-    tagsEl.appendChild(span);
-  });
-
-  document.getElementById('detail-desc').textContent = item.description || item.scene_desc || '';
-
-  const storyEl = document.getElementById('detail-story');
-  const storyTxt = document.getElementById('detail-story-text');
-  if (item.story || item.tour_story) {
-    storyTxt.textContent = item.story || item.tour_story;
-    storyEl.style.display = 'block';
-  } else {
-    storyEl.style.display = 'none';
-  }
-
-  const lat = item.lat; const lon = item.lon;
-  document.getElementById('detail-coords').textContent = lat && lon ? `📍 ${parseFloat(lat).toFixed(4)}, ${parseFloat(lon).toFixed(4)}` : '';
-
-  document.getElementById('detail').classList.add('open');
-}
-
-function showWaterDetail(w) {
-  document.getElementById('detail-badge').textContent = '💧 ' + (w.type || 'water');
-  document.getElementById('detail-badge').style.background = CAT_COLORS.water;
-  document.getElementById('detail-title').textContent = w.name;
-  document.getElementById('detail-subtitle').textContent = [
-    w.area_acres ? w.area_acres + ' acres' : '',
-    w.max_depth_ft ? 'max depth ' + w.max_depth_ft + ' ft' : '',
-    w.avg_depth_ft ? 'avg depth ' + w.avg_depth_ft + ' ft' : '',
-  ].filter(Boolean).join(' · ');
-  document.getElementById('detail-tags').innerHTML = '';
-  document.getElementById('detail-desc').textContent = w.notes || '';
-  document.getElementById('detail-story').style.display = 'none';
-  document.getElementById('detail-coords').textContent = '';
-  document.getElementById('detail').classList.add('open');
-}
-
-function closeDetail() {
-  document.getElementById('detail').classList.remove('open');
-  selectedId = null;
-  document.querySelectorAll('.list-item').forEach(el => el.classList.remove('selected'));
-}
-
-function setSelected(id) {
-  selectedId = id;
-  document.querySelectorAll('.list-item').forEach(el => {
-    el.classList.toggle('selected', el.dataset.id === id);
-  });
-}
-
-// ─────────────────────────────────────────────────────────────
-//  WALK PLAYER
-// ─────────────────────────────────────────────────────────────
-async function openWalkPlayer(walkId) {
-  const walk = allWalks.find(w => w.id === walkId);
-  if (!walk) return;
-
-  const { data: waypoints } = await supabase
-    .from('waypoints')
-    .select('*')
-    .eq('walk_id', walkId)
-    .order('order_index');
-
-  document.getElementById('player-title').textContent = walk.title;
-  document.getElementById('walk-player').classList.add('open');
-
-  // Init player map if needed
-  if (!playerMap) {
-    playerMap = L.map('player-map', { center: [40.7829, -73.9654], zoom: 15, zoomControl: false });
-    L.control.zoom({ position: 'bottomright' }).addTo(playerMap);
-    L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
-      attribution: '&copy; OpenStreetMap &copy; CARTO', maxZoom: 19,
-    }).addTo(playerMap);
-  } else {
-    setTimeout(() => playerMap.invalidateSize(), 100);
-  }
-
-  // Clear previous
-  playerMarkers.forEach(m => playerMap.removeLayer(m));
-  playerMarkers = [];
-
-  const wpEl = document.getElementById('player-waypoints');
-  wpEl.innerHTML = '';
-
-  const pts = [];
-  (waypoints || []).forEach((wp, i) => {
-    if (wp.lat && wp.lon) {
-      pts.push([wp.lat, wp.lon]);
-      const m = L.marker([wp.lat, wp.lon], { icon: makeIcon(CAT_COLORS.landmark, 28) })
-        .addTo(playerMap)
-        .bindPopup(`<div class="lp-inner"><div class="lp-name">${wp.title}</div><div class="lp-sub">${wp.subtitle||''}</div></div>`);
-      playerMarkers.push(m);
-    }
-
-    const card = document.createElement('div');
-    card.className = 'wp-card' + (i === 0 ? ' current' : '');
-    card.innerHTML = `
-      <div class="wp-num">${i+1}</div>
-      <div class="wp-name">${wp.title}</div>
-      <div class="wp-sub">${wp.subtitle||''}</div>`;
-    card.onclick = () => {
-      document.querySelectorAll('.wp-card').forEach(c => c.classList.remove('current'));
-      card.classList.add('current');
-      if (wp.lat && wp.lon) playerMap.setView([wp.lat, wp.lon], 16, { animate: true });
-    };
-    wpEl.appendChild(card);
-  });
-
-  if (pts.length) {
-    L.polyline(pts, { color: CAT_COLORS.landmark, weight: 3, opacity: .7, dashArray: '6 6' }).addTo(playerMap);
-    playerMap.fitBounds(pts, { padding: [30, 30] });
-  }
-
-  setTimeout(() => playerMap.invalidateSize(), 200);
-}
-
-function closeWalkPlayer() {
-  document.getElementById('walk-player').classList.remove('open');
-}
-
-// ─────────────────────────────────────────────────────────────
-//  NAV TABS
-// ─────────────────────────────────────────────────────────────
-function switchTab(tab) {
-  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
-  event.target.classList.add('active');
-
-  if (tab === 'walks') {
-    const list = document.getElementById('list');
-    document.getElementById('result-meta').textContent = `${allWalks.length} walk${allWalks.length !== 1 ? 's' : ''} available`;
-    document.getElementById('sidebar-header').style.display = 'none';
-    document.getElementById('tabs').style.display = 'none';
-
-    if (!allWalks.length) {
-      list.innerHTML = `<div class="empty">
-        <span class="empty-icon">🗺️</span>
-        <strong>No walks yet</strong><br>
-        The first walk will appear here once published.<br>
-        <small style="color:#aaa;margin-top:8px;display:block">Guides: contact us to add your walk</small>
-      </div>`;
-    } else {
-      list.innerHTML = '';
-      allWalks.forEach(walk => {
-        const guide = allGuides.find(g => g.id === walk.guide_id);
-        const card = document.createElement('div');
-        card.className = 'walk-card';
-        card.innerHTML = `
-          <div class="walk-title">${walk.title}</div>
-          ${guide ? `<div class="walk-guide">by ${guide.name}</div>` : ''}
-          <div class="walk-stats">
-            ${walk.distance_miles ? `<span class="walk-stat">🚶 ${walk.distance_miles}mi</span>` : ''}
-            ${walk.duration_mins ? `<span class="walk-stat">⏱ ${walk.duration_mins}min</span>` : ''}
-            ${walk.elevation_gain_ft ? `<span class="walk-stat">⛰ +${walk.elevation_gain_ft}ft</span>` : ''}
-            ${walk.difficulty ? `<span class="walk-stat">📊 ${walk.difficulty}</span>` : ''}
-          </div>
-          <div class="walk-tags">${(walk.tags||[]).map(t=>`<span class="walk-tag">${t}</span>`).join('')}</div>
-          <button class="walk-btn" onclick="openWalkPlayer('${walk.id}')">Start this walk →</button>
-        `;
-        list.appendChild(card);
-      });
-    }
-
-  } else if (tab === 'map') {
-    document.getElementById('sidebar-header').style.display = '';
-    document.getElementById('tabs').style.display = '';
-    renderList();
-
-  } else if (tab === 'about') {
-    document.getElementById('result-meta').textContent = 'About';
-    document.getElementById('sidebar-header').style.display = 'none';
-    document.getElementById('tabs').style.display = 'none';
-    const guide = allGuides[0];
-    document.getElementById('list').innerHTML = `
-      <div style="padding:20px 16px">
-        ${guide ? `
-          <div style="font-family:'Playfair Display',serif;font-size:18px;font-weight:700;margin-bottom:6px">${guide.name}</div>
-          <div style="font-size:12px;color:#2d6a4f;font-weight:500;margin-bottom:10px">${(guide.specialties||[]).join(' · ')}</div>
-          <div style="font-size:13px;line-height:1.7;color:#333;margin-bottom:16px">${guide.bio||''}</div>
-        ` : ''}
-        <div style="background:#f0f7f4;border-radius:8px;padding:14px;font-size:12px;line-height:1.6;color:#2a4a3a">
-          <strong style="display:block;font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:#2d6a4f;margin-bottom:6px">About This Platform</strong>
-          Central Park Boutique Tours is an open platform for professional guides to publish self-guided walks enriched with historical research, LGBTQ history, film locations, and ecological data.
-          <br><br>
-          Built on: <strong>centralpark.com</strong> data · <strong>NYC Open Data</strong> · LGBTQ Historic Sites Project · 16,000 GPS tree records
-        </div>
-        <div style="margin-top:14px;padding:12px 14px;border:1px solid #e0d8cc;border-radius:8px;font-size:12px">
-          <strong style="display:block;margin-bottom:4px">Are you a guide?</strong>
-          Contact us to publish your own walk on this platform.
-          <br><a href="https://centralparkboutiquetours.com" target="_blank" style="color:#2d6a4f;font-weight:500;display:block;margin-top:6px">centralparkboutiquetours.com →</a>
-        </div>
-      </div>`;
-  }
-}
-
-// ─────────────────────────────────────────────────────────────
-//  HELPERS
-// ─────────────────────────────────────────────────────────────
-function flyTo(lat, lon, zoom = 16) {
-  if (lat && lon) map.flyTo([lat, lon], zoom, { duration: 0.8 });
-}
-
-window.openDetail      = openDetail;
-window.openWalkPlayer  = openWalkPlayer;
-
-// ─────────────────────────────────────────────────────────────
-//  START
-// ─────────────────────────────────────────────────────────────
-init();
+// ═══════════════════════════════════════════════════
+//  GO
+// ═══════════════════════════════════════════════════
+render();
 </script>
 </body>
 </html>
