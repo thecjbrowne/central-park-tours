@@ -3,216 +3,179 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Central Park Boutique Tours</title>
+<title>Central Park · An Illustrated Guide</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400;1,600&family=EB+Garamond:ital,wght@0,400;0,500;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
 <style>
-* { box-sizing: border-box; margin: 0; padding: 0; }
-html, body { height: 100%; font-family: 'DM Sans', sans-serif; overflow: hidden; }
-
-body { display: flex; flex-direction: column; background: #1a3d2b; }
-
-#header {
-  height: 52px;
-  background: #1a3d2b;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 0 18px;
-  flex-shrink: 0;
-  border-bottom: 1px solid rgba(255,255,255,.08);
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;overflow:hidden}
+body{display:flex;flex-direction:column;font-family:'DM Sans',sans-serif;background:#0d1f0f}
+:root{
+  --forest:#0d1f0f;--forest-mid:#1a3320;--forest-lt:#2d5a3d;
+  --gold:#c9a84c;--gold-lt:#e8cc7a;--gold-dim:#8a6e2f;
+  --cream:#f5f0e4;--ink-lt:#7a6e58;--rule:rgba(201,168,76,.18);
 }
-.h-title {
-  font-family: 'Playfair Display', serif;
-  font-size: 18px;
-  color: #f5f0e8;
-  font-weight: 700;
-}
-.h-title span { color: #52b788; }
-.h-sub { font-size: 11px; color: rgba(245,240,232,.45); letter-spacing: .08em; text-transform: uppercase; }
 
-#main { flex: 1; display: flex; overflow: hidden; }
+/* HEADER */
+#hdr{height:56px;background:var(--forest);display:flex;align-items:center;justify-content:space-between;padding:0 22px;flex-shrink:0;border-bottom:1px solid var(--rule);position:relative}
+#hdr::after{content:'';position:absolute;bottom:-1px;left:10%;right:10%;height:1px;background:linear-gradient(to right,transparent,var(--gold-dim),transparent)}
+.hl{display:flex;align-items:center;gap:14px}
+.hcrest{width:36px;height:36px;border:1.5px solid var(--gold-dim);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:17px;background:var(--forest-mid)}
+.hwm{display:flex;flex-direction:column;gap:1px}
+.htitle{font-family:'Playfair Display',serif;font-size:17px;font-weight:700;color:var(--cream);letter-spacing:.02em;line-height:1}
+.htitle em{color:var(--gold);font-style:normal}
+.hsub{font-size:9px;color:var(--gold-dim);letter-spacing:.18em;text-transform:uppercase;font-family:'EB Garamond',serif}
+.hright{font-size:10px;color:var(--gold-dim);letter-spacing:.12em;text-transform:uppercase;font-family:'EB Garamond',serif}
+
+/* LAYOUT */
+#main{flex:1;display:flex;overflow:hidden}
 
 /* SIDEBAR */
-#sidebar {
-  width: 320px;
-  background: #f5f0e8;
-  display: flex;
-  flex-direction: column;
-  flex-shrink: 0;
-  overflow: hidden;
-  border-right: 1px solid #e8e0d0;
-}
-
-#search-box {
-  padding: 12px;
-  border-bottom: 1px solid #e8e0d0;
-  flex-shrink: 0;
-}
-#search {
-  width: 100%;
-  padding: 8px 12px 8px 32px;
-  border: 1.5px solid rgba(0,0,0,.12);
-  border-radius: 8px;
-  font-size: 13px;
-  font-family: 'DM Sans', sans-serif;
-  background: white;
-  outline: none;
-}
-#search:focus { border-color: #2d6a4f; }
-.s-icon { position: absolute; left: 22px; top: 21px; font-size: 13px; opacity: .35; }
-
-#filters {
-  padding: 8px 12px;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 5px;
-  border-bottom: 1px solid #e8e0d0;
-  flex-shrink: 0;
-}
-.pill {
-  padding: 4px 10px;
-  border-radius: 20px;
-  font-size: 11px;
-  font-weight: 500;
-  cursor: pointer;
-  border: 1.5px solid rgba(0,0,0,.1);
-  background: white;
-  color: #666;
-  transition: all .15s;
-  user-select: none;
-}
-.pill:hover { border-color: #2d6a4f; color: #2d6a4f; }
-.pill.on { color: white; border-color: transparent; }
-
-#count { padding: 6px 12px; font-size: 11px; color: #888; text-transform: uppercase; letter-spacing: .06em; flex-shrink: 0; }
-
-#list { flex: 1; overflow-y: auto; }
-#list::-webkit-scrollbar { width: 3px; }
-#list::-webkit-scrollbar-thumb { background: rgba(0,0,0,.1); border-radius: 2px; }
-
-.item {
-  padding: 10px 14px;
-  cursor: pointer;
-  border-bottom: 1px solid rgba(0,0,0,.04);
-  display: flex;
-  align-items: flex-start;
-  gap: 9px;
-  transition: background .1s;
-}
-.item:hover { background: rgba(0,0,0,.03); }
-.item.on { background: rgba(45,106,79,.08); }
-.dot { width: 9px; height: 9px; border-radius: 50%; flex-shrink: 0; margin-top: 4px; }
-.iname { font-size: 13px; font-weight: 500; color: #1a1a1a; line-height: 1.3; }
-.isub { font-size: 11px; color: #888; margin-top: 1px; }
+#sb{width:295px;background:var(--forest);display:flex;flex-direction:column;flex-shrink:0;overflow:hidden;border-right:1px solid var(--rule)}
+.orn{text-align:center;color:var(--gold-dim);font-family:'EB Garamond',serif;font-size:11px;letter-spacing:.3em;padding:8px 0 4px;flex-shrink:0}
+#swrap{padding:0 14px 8px;flex-shrink:0;position:relative}
+#srch{width:100%;padding:8px 12px 8px 30px;background:rgba(255,255,255,.05);border:1px solid var(--rule);border-radius:5px;font-size:12px;font-family:'DM Sans',sans-serif;color:var(--cream);outline:none;transition:border-color .2s}
+#srch::placeholder{color:rgba(245,240,228,.25)}
+#srch:focus{border-color:var(--gold-dim)}
+.sico{position:absolute;left:24px;top:50%;transform:translateY(-50%);font-size:12px;opacity:.3;pointer-events:none}
+#flt{padding:0 14px 10px;display:flex;flex-wrap:wrap;gap:4px;flex-shrink:0;border-bottom:1px solid var(--rule)}
+.pill{padding:3px 9px;border-radius:3px;font-size:10px;cursor:pointer;border:1px solid var(--rule);color:rgba(245,240,228,.4);background:transparent;transition:all .15s;letter-spacing:.04em;user-select:none;font-family:'EB Garamond',serif}
+.pill:hover{border-color:var(--gold-dim);color:var(--gold-lt)}
+.pill.on{color:#0d1f0f;border-color:transparent;font-weight:600}
+#cnt{padding:8px 14px 4px;font-size:9px;color:var(--gold-dim);letter-spacing:.14em;text-transform:uppercase;font-family:'EB Garamond',serif;flex-shrink:0}
+#lst{flex:1;overflow-y:auto}
+#lst::-webkit-scrollbar{width:2px}
+#lst::-webkit-scrollbar-thumb{background:var(--rule);border-radius:2px}
+.itm{padding:9px 14px;cursor:pointer;border-bottom:1px solid rgba(255,255,255,.04);display:flex;align-items:flex-start;gap:10px;transition:background .12s}
+.itm:hover{background:rgba(255,255,255,.04)}
+.itm.on{background:rgba(201,168,76,.08)}
+.iico{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;border:1px solid rgba(255,255,255,.1)}
+.inm{font-family:'EB Garamond',serif;font-size:14px;font-weight:500;color:var(--cream);line-height:1.25}
+.isb{font-size:10px;color:var(--gold-dim);margin-top:1px;letter-spacing:.03em}
+#sbft{padding:10px 14px;border-top:1px solid var(--rule);text-align:center;flex-shrink:0}
+#sbft p{font-family:'EB Garamond',serif;font-size:10px;font-style:italic;color:var(--gold-dim);line-height:1.5}
 
 /* MAP */
-#map-wrap { flex: 1; position: relative; }
-#map { width: 100%; height: 100%; }
+#mwrap{flex:1;position:relative;overflow:hidden}
+#map{width:100%;height:100%}
 
-/* DETAIL PANEL */
-#panel {
-  position: absolute;
-  bottom: 0; left: 0; right: 0;
-  background: white;
-  border-top: 3px solid #2d6a4f;
-  box-shadow: 0 -4px 24px rgba(0,0,0,.15);
-  max-height: 0;
-  overflow: hidden;
-  transition: max-height .3s cubic-bezier(.4,0,.2,1);
-  z-index: 500;
-}
-#panel.open { max-height: 300px; }
-#panel-inner {
-  padding: 16px 20px 20px;
-  max-height: 300px;
-  overflow-y: auto;
-}
-#panel-inner::-webkit-scrollbar { width: 3px; }
-#panel-inner::-webkit-scrollbar-thumb { background: rgba(0,0,0,.1); border-radius: 2px; }
+/* COMPASS */
+#cmp{position:absolute;bottom:44px;right:14px;z-index:500;width:62px;height:62px;pointer-events:none;filter:drop-shadow(0 2px 8px rgba(0,0,0,.45));opacity:.85}
 
-#p-close {
-  position: absolute; top: 10px; right: 12px;
-  background: rgba(0,0,0,.07); border: none;
-  width: 26px; height: 26px; border-radius: 50%;
-  font-size: 15px; cursor: pointer; color: #666;
-  display: flex; align-items: center; justify-content: center;
-}
-#p-close:hover { background: rgba(0,0,0,.13); }
+/* CARTOUCHE */
+#ctch{position:absolute;top:14px;left:50%;transform:translateX(-50%);z-index:500;background:rgba(13,31,15,.85);border:1px solid var(--gold-dim);border-radius:4px;padding:6px 20px;backdrop-filter:blur(10px);pointer-events:none;white-space:nowrap;box-shadow:0 2px 20px rgba(0,0,0,.5)}
+#ctch-t{font-family:'Playfair Display',serif;font-size:13px;font-weight:700;font-style:italic;color:var(--gold-lt);letter-spacing:.07em;text-align:center;line-height:1.2}
+#ctch-s{font-family:'EB Garamond',serif;font-size:9px;color:var(--gold-dim);letter-spacing:.18em;text-transform:uppercase;text-align:center;margin-top:2px}
 
-#p-badge {
-  display: inline-block;
-  padding: 2px 9px; border-radius: 20px;
-  font-size: 10px; font-weight: 600;
-  letter-spacing: .07em; text-transform: uppercase;
-  color: white; margin-bottom: 6px;
-}
-#p-title {
-  font-family: 'Playfair Display', serif;
-  font-size: 21px; font-weight: 700;
-  color: #1a1a1a; line-height: 1.2; margin-bottom: 4px;
-}
-#p-sub { font-size: 12px; color: #888; margin-bottom: 10px; }
-#p-tags { display: flex; flex-wrap: wrap; gap: 4px; margin-bottom: 10px; }
-.ptag { padding: 2px 7px; background: #f5f0e8; border-radius: 4px; font-size: 10px; color: #777; }
-#p-desc { font-size: 13px; line-height: 1.72; color: #333; margin-bottom: 10px; }
-#p-story {
-  background: #f0f7f4; border-left: 3px solid #2d6a4f;
-  padding: 9px 13px; border-radius: 0 7px 7px 0;
-  font-size: 12px; font-style: italic; line-height: 1.65; color: #2a4a3a;
-  margin-bottom: 8px;
-}
-#p-story b { font-style: normal; font-size: 10px; text-transform: uppercase; letter-spacing: .07em; color: #2d6a4f; display: block; margin-bottom: 3px; }
-#p-coords { font-size: 10px; color: #bbb; font-family: monospace; }
+/* PANEL */
+#pnl{position:absolute;bottom:0;left:0;right:0;background:var(--forest);border-top:2px solid var(--gold-dim);box-shadow:0 -6px 40px rgba(0,0,0,.6);max-height:0;overflow:hidden;transition:max-height .4s cubic-bezier(.4,0,.2,1);z-index:600}
+#pnl.open{max-height:310px}
+#pi{padding:18px 22px 22px;max-height:310px;overflow-y:auto}
+#pi::-webkit-scrollbar{width:2px}
+#pi::-webkit-scrollbar-thumb{background:var(--rule)}
+#pcls{position:absolute;top:12px;right:14px;background:rgba(255,255,255,.07);border:1px solid var(--rule);width:26px;height:26px;border-radius:50%;font-size:14px;cursor:pointer;color:var(--gold-dim);display:flex;align-items:center;justify-content:center;transition:all .15s}
+#pcls:hover{background:rgba(255,255,255,.14);color:var(--cream)}
+.prow{font-family:'EB Garamond',serif;font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:var(--gold);margin-bottom:6px;display:flex;align-items:center;gap:8px}
+.prule{flex:1;height:1px;background:var(--rule)}
+#pt{font-family:'Playfair Display',serif;font-size:23px;font-weight:700;color:var(--cream);line-height:1.15;margin-bottom:3px}
+#ps{font-family:'EB Garamond',serif;font-size:13px;font-style:italic;color:var(--gold-dim);margin-bottom:10px}
+#ptags{display:flex;flex-wrap:wrap;gap:4px;margin-bottom:12px}
+.ptag{padding:2px 7px;border:1px solid var(--rule);border-radius:2px;font-size:9px;letter-spacing:.08em;text-transform:uppercase;color:var(--gold-dim);font-family:'EB Garamond',serif}
+#pd{font-family:'EB Garamond',serif;font-size:14px;line-height:1.8;color:rgba(245,240,228,.8);margin-bottom:14px}
+#pst{border-left:2px solid var(--gold-dim);padding:8px 14px;background:rgba(201,168,76,.06);border-radius:0 4px 4px 0;margin-bottom:8px}
+#psl{font-family:'EB Garamond',serif;font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:var(--gold);margin-bottom:4px}
+#pstxt{font-family:'EB Garamond',serif;font-size:14px;font-style:italic;line-height:1.7;color:rgba(245,240,228,.75)}
+#pco{font-size:9px;color:#555;font-family:monospace;letter-spacing:.06em;margin-top:8px}
 
-/* leaflet tweaks */
-.leaflet-popup-content-wrapper { border-radius: 10px; box-shadow: 0 4px 20px rgba(0,0,0,.18); padding: 0; overflow: hidden; }
-.leaflet-popup-content { margin: 0; }
-.leaflet-popup-tip-container { display: none; }
-.lp { padding: 10px 14px; min-width: 160px; max-width: 220px; }
-.lp-cat { font-size: 10px; font-weight: 600; letter-spacing: .07em; text-transform: uppercase; margin-bottom: 3px; }
-.lp-name { font-family: 'Playfair Display', serif; font-size: 14px; font-weight: 700; color: #1a1a1a; margin-bottom: 5px; line-height: 1.2; }
-.lp-sub { font-size: 11px; color: #777; margin-bottom: 8px; line-height: 1.4; }
-.lp-btn { padding: 5px 12px; background: #2d6a4f; color: white; border: none; border-radius: 5px; font-size: 11px; font-weight: 500; cursor: pointer; font-family: 'DM Sans', sans-serif; }
-.lp-btn:hover { background: #1a3d2b; }
+/* MARKER ANIMATIONS */
+@keyframes dropIn{0%{transform:translateY(-16px) scale(.75);opacity:0}65%{transform:translateY(3px) scale(1.04)}100%{transform:translateY(0) scale(1);opacity:1}}
+@keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.15)}}
+.mk{animation:dropIn .45s cubic-bezier(.2,.8,.3,1) both;cursor:pointer;transition:transform .15s;display:block}
+.mk:hover{transform:scale(1.18) translateY(-3px)}
+.mk.sel{animation:pulse .75s ease-in-out infinite}
 
-@media (max-width: 640px) { #sidebar { display: none; } }
+/* LEAFLET */
+.leaflet-popup-content-wrapper{border-radius:6px;box-shadow:0 6px 32px rgba(0,0,0,.5);padding:0;overflow:hidden;background:#0d1f0f;border:1px solid #8a6e2f}
+.leaflet-popup-content{margin:0}
+.leaflet-popup-tip{background:#8a6e2f!important}
+.lp{padding:12px 16px;min-width:180px;max-width:240px}
+.lpc{font-size:9px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;margin-bottom:4px;font-family:'EB Garamond',serif}
+.lpn{font-family:'Playfair Display',serif;font-size:15px;font-weight:700;color:#f5f0e4;margin-bottom:3px;line-height:1.2}
+.lpsb{font-family:'EB Garamond',serif;font-size:12px;font-style:italic;color:rgba(245,240,228,.45);margin-bottom:10px;line-height:1.4}
+.lpb{padding:5px 13px;background:transparent;border:1px solid #8a6e2f;color:#e8cc7a;border-radius:3px;font-size:11px;cursor:pointer;font-family:'EB Garamond',serif;letter-spacing:.06em;transition:all .15s}
+.lpb:hover{background:#8a6e2f;color:#0d1f0f}
+.leaflet-control-zoom{border:1px solid #8a6e2f!important;box-shadow:none!important;border-radius:4px!important;overflow:hidden}
+.leaflet-control-zoom a{background:#0d1f0f!important;color:#e8cc7a!important;border-bottom:1px solid rgba(201,168,76,.15)!important;font-weight:300!important}
+.leaflet-control-zoom a:hover{background:#1a3320!important}
+.leaflet-control-attribution{background:rgba(13,31,15,.75)!important;color:rgba(255,255,255,.25)!important;font-size:9px!important}
+.leaflet-control-attribution a{color:rgba(255,255,255,.3)!important}
+
+@media(max-width:660px){#sb{display:none}#pnl.open{max-height:60vh}}
 </style>
 </head>
 <body>
 
-<div id="header">
-  <div>
-    <div class="h-title">Central Park <span>Boutique Tours</span></div>
+<div id="hdr">
+  <div class="hl">
+    <div class="hcrest">🌿</div>
+    <div class="hwm">
+      <div class="htitle">Central Park <em>Boutique Tours</em></div>
+      <div class="hsub">An Illustrated Field Guide · New York City</div>
+    </div>
   </div>
-  <div class="h-sub">Interactive Map · NYC</div>
+  <div class="hright">Est. 1858 · 843 Acres</div>
 </div>
 
 <div id="main">
-  <div id="sidebar">
-    <div id="search-box" style="position:relative">
-      <span class="s-icon">🔍</span>
-      <input id="search" type="text" placeholder="Search locations, films, history…">
+  <div id="sb">
+    <div class="orn">· · · · ·</div>
+    <div id="swrap" style="position:relative">
+      <span class="sico">⌕</span>
+      <input id="srch" type="text" placeholder="Search locations, films, history…">
     </div>
-    <div id="filters"></div>
-    <div id="count"></div>
-    <div id="list"></div>
+    <div id="flt"></div>
+    <div id="cnt"></div>
+    <div id="lst"></div>
+    <div id="sbft"><p>Olmsted &amp; Vaux · Greensward Plan · 1858<br><em>"A democratic development of the highest significance"</em></p></div>
   </div>
 
-  <div id="map-wrap">
+  <div id="mwrap">
     <div id="map"></div>
 
-    <div id="panel">
-      <button id="p-close" onclick="closePanel()">×</button>
-      <div id="panel-inner">
-        <div id="p-badge"></div>
-        <div id="p-title"></div>
-        <div id="p-sub"></div>
-        <div id="p-tags"></div>
-        <div id="p-desc"></div>
-        <div id="p-story"><b>Tour Story</b><span id="p-story-text"></span></div>
-        <div id="p-coords"></div>
+    <!-- Cartouche -->
+    <div id="ctch">
+      <div id="ctch-t">Central Park</div>
+      <div id="ctch-s">Manhattan · New York · 40°46′N</div>
+    </div>
+
+    <!-- Compass -->
+    <svg id="cmp" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="32" cy="32" r="30" fill="rgba(13,31,15,.8)" stroke="#8a6e2f" stroke-width="1"/>
+      <circle cx="32" cy="32" r="24" fill="none" stroke="rgba(138,110,47,.25)" stroke-width=".5"/>
+      <polygon points="32,6 28.5,32 32,27.5 35.5,32" fill="#c9a84c"/>
+      <polygon points="32,58 28.5,32 32,36.5 35.5,32" fill="rgba(201,168,76,.35)"/>
+      <polygon points="6,32 32,28.5 27.5,32 32,35.5" fill="rgba(201,168,76,.35)"/>
+      <polygon points="58,32 32,28.5 36.5,32 32,35.5" fill="rgba(201,168,76,.35)"/>
+      <circle cx="32" cy="32" r="3" fill="#c9a84c"/>
+      <circle cx="32" cy="32" r="1.5" fill="#0d1f0f"/>
+      <text x="32" y="19" text-anchor="middle" fill="#c9a84c" font-size="7" font-family="serif" font-weight="700" letter-spacing="1">N</text>
+      <text x="32" y="53" text-anchor="middle" fill="rgba(201,168,76,.45)" font-size="6" font-family="serif">S</text>
+      <text x="19" y="35" text-anchor="middle" fill="rgba(201,168,76,.45)" font-size="6" font-family="serif">W</text>
+      <text x="45" y="35" text-anchor="middle" fill="rgba(201,168,76,.45)" font-size="6" font-family="serif">E</text>
+    </svg>
+
+    <!-- Detail Panel -->
+    <div id="pnl">
+      <button id="pcls" onclick="closePanel()">×</button>
+      <div id="pi">
+        <div class="prow"><span id="pcat">Location</span><div class="prule"></div></div>
+        <div id="pt"></div>
+        <div id="ps"></div>
+        <div id="ptags"></div>
+        <div id="pd"></div>
+        <div id="pst"><div id="psl">The Guide's Story</div><div id="pstxt"></div></div>
+        <div id="pco"></div>
       </div>
     </div>
   </div>
@@ -220,247 +183,194 @@ body { display: flex; flex-direction: column; background: #1a3d2b; }
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script>
-// ═══════════════════════════════════════════════════
-//  DATA — all locations hardcoded, zero DB dependency
-// ═══════════════════════════════════════════════════
-const COLORS = {
-  landmark: '#2d6a4f',
-  film:     '#1565C0',
-  lgbtq:    '#7B1FA2',
-  history:  '#8B3A0F',
-  music:    '#E65100',
-  nature:   '#2E7D32',
-  facility: '#00695C',
-  civil:    '#B71C1C',
+const CAT = {
+  landmark:{ color:'#5aaa78', label:'Landmarks',    glyph:'🏛' },
+  film:    { color:'#6b9fd4', label:'Film',          glyph:'🎬' },
+  lgbtq:   { color:'#c47ed4', label:'LGBTQ',         glyph:'🏳️‍🌈' },
+  history: { color:'#c47840', label:'History',       glyph:'📜' },
+  music:   { color:'#d4915a', label:'Music',         glyph:'♪' },
+  nature:  { color:'#74bb7a', label:'Nature',        glyph:'🌿' },
+  civil:   { color:'#d46a6a', label:'Civil Rights',  glyph:'✊' },
+  facility:{ color:'#5ab8c4', label:'Facilities',    glyph:'ℹ' },
 };
 
 const DATA = [
-  // LANDMARKS
-  { id:1,  cat:'landmark', name:'Bethesda Fountain',        sub:'Emma Stebbins, 1873',                     lat:40.7740, lon:-73.9710, tags:['fountain','landmark','wedding'],         desc:'The centerpiece of Central Park. The Angel of the Waters is the only sculpture commissioned as part of the original park design — and secretly queer from day one. Sculptor Emma Stebbins was a lesbian who modeled the Angel on her partner Charlotte Cushman.', story:'Of 51 sculptures in Central Park, fewer than 10 depict women. This one, made by a lesbian and modeled on her lover, is the most famous.' },
-  { id:2,  cat:'landmark', name:'Bow Bridge',               sub:'Calvert Vaux, 1862',                      lat:40.7754, lon:-73.9726, tags:['bridge','film','romantic'],             desc:'The largest and most filmed of the park\'s 36 bridges. Every bridge is different by design — Vaux considered variety essential so visitors never felt they were going in circles.', story:'Nora Ephron chose this bridge for When Harry Met Sally because, she said, it looks like a painting in every direction.' },
-  { id:3,  cat:'landmark', name:'Belvedere Castle',         sub:'Calvert Vaux, 1869 — highest point',      lat:40.7794, lon:-73.9691, tags:['castle','views','architecture'],        desc:'Built as a decorative "folly" — meaning it was never intended to function as a real castle. Sits on Vista Rock, the second-highest natural point in the park. Has housed the Central Park Weather Station since 1919.', story:'It\'s not a real castle. Vaux built it so the Great Lawn would have a romantic focal point. It has never had any defensive purpose.' },
-  { id:4,  cat:'landmark', name:'Strawberry Fields',        sub:'John Lennon memorial, 1985',              lat:40.7754, lon:-73.9790, tags:['memorial','lennon','peace'],            desc:'A 2.5-acre international garden of peace dedicated to John Lennon, who was shot outside the Dakota across the street on December 8, 1980. The IMAGINE mosaic is a gift from Naples, Italy.', story:'People leave flowers at the IMAGINE mosaic every single day. The Dakota has never erected a plaque.' },
-  { id:5,  cat:'landmark', name:'The Mall / Literary Walk', sub:'Only straight line in Olmsted\'s design',  lat:40.7712, lon:-73.9712, tags:['elms','shakespeare','formal'],          desc:'The only formal straight element in Olmsted\'s deliberately naturalistic design — included reluctantly. Lined with one of the last great stands of American elm in the northeast. Statues of Shakespeare, Burns, Scott, and Columbus line the path.', story:'Olmsted hated straight lines. This is the one compromise he made, and he resented it. He considered formal geometry an imposition on nature.' },
-  { id:6,  cat:'landmark', name:'Cleopatra\'s Needle',      sub:'~1600 BCE — oldest object in NYC',        lat:40.7796, lon:-73.9637, tags:['ancient','egypt','obelisk'],            desc:'An Egyptian obelisk dating to approximately 1600 BCE — the oldest public monument in the Western Hemisphere. Julius Caesar and Cleopatra walked past it. Given to the US by Egypt in 1877. The bronze crabs at its base are Roman originals, 2,000 years old.', story:'This obelisk was already ancient when Rome was born. It stood for 1,500 years before Columbus sailed. New York air pollution is slowly dissolving it.' },
-  { id:7,  cat:'landmark', name:'Conservatory Garden',      sub:'WPA project, 1937',                       lat:40.7957, lon:-73.9510, tags:['garden','formal','WPA','vanderbilt'],   desc:'Six acres of formal gardens opened in 1937 as a Works Progress Administration New Deal project. Three styles: Italian, French, and English. The iron Vanderbilt Gate was salvaged from the Cornelius Vanderbilt II mansion, demolished in 1926.', story:'This garden exists because of the New Deal. Thousands of Depression-era workers built it. You walk through a Vanderbilt\'s gate every time you enter.' },
-  { id:8,  cat:'landmark', name:'The Arsenal',              sub:'Greensward Plan selected here, 1858',     lat:40.7672, lon:-73.9706, tags:['history','architecture','nyc parks'],    desc:'Built in 1848, this building predates Central Park itself. In April 1858, the park commissioners met here and chose Olmsted and Vaux\'s "Greensward Plan" from 33 submissions — the decision that created the park.', story:'Before it was offices, the Arsenal briefly housed tigers and bears. It was New York\'s first weather bureau station and once served as a police precinct.' },
-  { id:9,  cat:'landmark', name:'The Dairy',                sub:'Calvert Vaux, 1870 — public health',      lat:40.7680, lon:-73.9739, tags:['architecture','victorian','visitor center'], desc:'Originally an actual dairy where fresh milk was dispensed to city children and nursing mothers. Olmsted believed city children needed access to uncontaminated milk. Fell into disrepair by the 1960s. Restored 1979.', story:'This was a public health intervention. The milk supply in 1870 New York was often contaminated and killing children. Olmsted built a dairy inside the park as a remedy.' },
-  { id:10, cat:'landmark', name:'Wollman Rink',             sub:'Trump renovation controversy, 1986',      lat:40.7646, lon:-73.9740, tags:['skating','film','love story'],           desc:'Built in 1950. In 1986, the city had spent 6 years and $12M failing to renovate it. Donald Trump proposed taking over and completed it in 4 months under budget — one of his earliest public "can-do" builder appearances. Featured in Love Story and Serendipity.', story:'The failed city renovation spent $12 million. Trump completed it for $2.5 million. It was the publicity launchpad for a persona he would ride for decades.' },
-  { id:11, cat:'landmark', name:'Loeb Boathouse',           sub:'Victorian boathouse — When Harry Met Sally', lat:40.7758, lon:-73.9693, tags:['film','restaurant','rowing'],        desc:'Rowboats have been available for rent here since the park opened in 1859. Nora Ephron filmed the rowboat scene from When Harry Met Sally on the lake just outside.', story:'This is the only place in midtown Manhattan where you can sit on a lake surrounded entirely by trees with no buildings visible. The city disappears completely.' },
-  { id:12, cat:'landmark', name:'Delacorte Theater',        sub:'Free Shakespeare since 1962',             lat:40.7800, lon:-73.9695, tags:['theater','shakespeare','free'],          desc:'Built 1962. Home to Shakespeare in the Park, founded by Joseph Papp on the principle that Shakespeare belongs to everyone. Meryl Streep, Kevin Kline, Al Pacino, Denzel Washington, and Anne Hathaway have all performed here for free.', story:'The 1971 production of Two Gentlemen of Verona here transferred to Broadway and won the Tony for Best Musical. A free park show launched a Broadway hit.' },
-  { id:13, cat:'landmark', name:'Naumburg Bandshell',       sub:'1923 — Rolling Stones played here',      lat:40.7718, lon:-73.9690, tags:['music','architecture','1923'],           desc:'Built 1923. In 1975, the Rolling Stones pulled up on flatbed trucks and performed without a permit while stuck in traffic. Featured in Marathon Man (1976).', story:'The Rolling Stones performed here guerrilla-style in 1975 — no permit, no stage setup. By the time police arrived, it was already a scene.' },
-  { id:14, cat:'landmark', name:'Tavern on the Green',      sub:'Former sheepfold, opened 1934',           lat:40.7730, lon:-73.9783, tags:['restaurant','history','robert moses'],   desc:'Originally the park\'s sheepfold where the Sheep Meadow sheep lived. Robert Moses kicked the sheep out in 1934 and converted it to a restaurant. Under Warner LeRoy it became the highest-grossing restaurant in America.', story:'The meadow still bears the sheep\'s name 90 years after they left. Sheep grazed here from 1864 to 1934.' },
-
-  // FILM
-  { id:20, cat:'film', name:'Gapstow Bridge',               sub:'Home Alone 2, Gossip Girl, Enchanted',   lat:40.7641, lon:-73.9737, tags:['bridge','home alone 2','photography'],   desc:'Built 1896. Kevin McCallister stood here feeding pigeons in Home Alone 2 (1992). One of the most filmed spots in the park, offering an iconic skyline view with the Plaza Hotel.', story:'If you\'ve seen New York City in a movie, you\'ve almost certainly seen this bridge. It\'s Hollywood\'s most reliable "we\'re in Central Park" establishing shot.' },
-  { id:21, cat:'film', name:'Bethesda Terrace (Film)',      sub:'The Warriors, Angels in America',        lat:40.7738, lon:-73.9708, tags:['film','the warriors','most filmed'],      desc:'The single most filmed location in Central Park. In The Warriors (1979) all NYC gangs gather here for a truce meeting. In Angels in America (2003) the fountain represents healing.', story:'The same fountain plays radically different roles in different films because it holds any meaning you give it. It\'s a blank canvas.' },
-  { id:22, cat:'film', name:'Sheep Meadow (Film)',          sub:'Countless establishing shots',            lat:40.7710, lon:-73.9773, tags:['film','establishing shot','meadow'],     desc:'The 15-acre lawn is one of the most used establishing shots in New York film history — the defining image of Central Park at leisure.', story:'Olmsted designed this meadow to give urban New Yorkers the experience of open countryside. It worked so well it became Hollywood\'s visual shorthand for "city park" worldwide.' },
-
-  // LGBTQ
-  { id:30, cat:'lgbtq', name:'The Ramble — Fruited Plain',  sub:'Gay social history since 1900s',         lat:40.7764, lon:-73.9712, tags:['lgbtq history','cruising','1920s'],       desc:'A 36-acre wooded area that has been a gay meeting ground since at least the early 1900s. The north lawn was nicknamed "The Fruited Plain" in the 1920s — one of the earliest documented public gay gathering spaces in the US. Harvey Milk was arrested here in 1947.', story:'In 1947, weeks out of high school, Harvey Milk was arrested here in a police entrapment operation. He would go on to become the first openly gay elected official in California.' },
-  { id:31, cat:'lgbtq', name:'Sheep Meadow — First Pride',  sub:'First Gay Pride "Gay-In" June 28, 1970', lat:40.7708, lon:-73.9775, tags:['lgbtq','pride 1970','stonewall'],        desc:'On June 28, 1970 — exactly one year after Stonewall — thousands gathered here for the first Christopher Street Liberation Day. Organizers expected a few hundred. The modern Pride parade descends directly from this moment.', story:'The organizers were stunned by the turnout. They had planned for a small gathering. What arrived was the beginning of a movement.' },
-  { id:32, cat:'lgbtq', name:'Seneca Village (LGBTQ context)', sub:'Black community displaced 1857',     lat:40.7720, lon:-73.9785, tags:['lgbtq context','displacement','black history'], desc:'From 1825–1857, approximately 225 Black residents lived here in one of Manhattan\'s most stable free Black communities, with three churches and two schools. Seized by eminent domain to build the park. No permanent memorial exists.', story:'This was one of the few places free Black New Yorkers could own land and thus qualify to vote. The park was built on their displacement.' },
-
-  // HISTORY
-  { id:40, cat:'history', name:'Seneca Village (1825–1857)', sub:'Black community displaced to build park', lat:40.7722, lon:-73.9787, tags:['displacement','black history','1857'],  desc:'From 1825–1857, approximately 225 Black residents lived here. Three churches, two schools, significant property ownership. The city used eminent domain and gave residents 90 days and below-market compensation. No permanent memorial.', story:'Seneca Village was one of the few places Black New Yorkers could own land and thus qualify to vote. The park we enjoy was built on their displacement.' },
-  { id:41, cat:'history', name:'Blockhouse No. 1',           sub:'Oldest structure in the park — 1814',   lat:40.7979, lon:-73.9541, tags:['war of 1812','oldest structure','military'], desc:'Built in 1814 when British forces threatened New York after burning Washington D.C. The attack never came. The blockhouse is the last surviving remnant of Manhattan\'s chain of wartime forts, predating the park by 45 years.', story:'This building was standing before the park existed. Built when New Yorkers genuinely feared a British invasion, it just sat here until a park was built around it.' },
-  { id:42, cat:'history', name:'Exonerated Five Site',       sub:'April 19, 1989 — wrongful conviction', lat:40.7892, lon:-73.9554, tags:['wrongful conviction','racial justice','1989'], desc:'Near here on April 19, 1989, Trisha Meili was attacked. Five Black and Latino teenagers were coerced into false confessions and wrongfully convicted, serving 6–13 years before being exonerated in 2002. They received a $41M settlement in 2014.', story:'Donald Trump took out full-page newspaper ads calling for the death penalty before the boys were tried. He never apologized after their exoneration.' },
-  { id:43, cat:'history', name:'Dakota Building',            sub:'John Lennon shot Dec 8, 1980',          lat:40.7762, lon:-73.9800, tags:['lennon','murder','1980','dakota'],         desc:'On December 8, 1980, John Lennon was shot four times by Mark David Chapman in the archway of the Dakota. Chapman had received Lennon\'s autograph earlier that day and waited for him to return. Lennon was pronounced dead at Roosevelt Hospital.', story:'Chapman was holding a copy of The Catcher in the Rye when arrested. J.D. Salinger was reportedly horrified his novel had been invoked. He gave no public statement.' },
-
-  // MUSIC
-  { id:50, cat:'music', name:'Great Lawn — Simon & Garfunkel', sub:'500,000 people — Sept 19, 1981',    lat:40.7800, lon:-73.9654, tags:['concert','simon garfunkel','1981','500k'],  desc:'Simon & Garfunkel performed a free reunion concert before an estimated 500,000 people — one of the largest concerts in history. The Concert in Central Park was recorded and released on HBO in 1982.', story:'Half a million people stood on this lawn on one night. Simon and Garfunkel split again shortly after. Some reunions don\'t take.' },
-  { id:51, cat:'music', name:'Great Lawn — Nuclear Rally',   sub:'1 million people — June 12, 1982',    lat:40.7802, lon:-73.9656, tags:['protest','nuclear','1982','largest rally'],  desc:'Approximately ONE MILLION people gathered here during the UN Special Session on Disarmament — the largest political demonstration in American history.', story:'One million people on this lawn in one afternoon. The damage required the lawn to be completely rebuilt with a new drainage system in 1997.' },
-  { id:52, cat:'music', name:'Rumsey Playfield — SummerStage', sub:'Free concerts since 1986',          lat:40.7697, lon:-73.9712, tags:['summerstage','free music','concerts'],       desc:'Home to City Parks Foundation\'s SummerStage since 1986, presenting ~100 events per year, roughly half completely free. Lauryn Hill, Sonic Youth, Massive Attack, and thousands of others have performed here.', story:'SummerStage was born from the same movement that restored the park — the idea that Central Park should serve all New Yorkers, including those who couldn\'t afford Madison Square Garden.' },
-
-  // NATURE
-  { id:60, cat:'nature', name:'The Ramble — Birdwatching',   sub:'Top migration site on East Coast',     lat:40.7768, lon:-73.9715, tags:['birdwatching','migration','wildlife'],      desc:'One of the top birdwatching sites in the eastern United States during spring and fall migration. Over 200 species recorded. The woodland provides critical habitat for birds navigating the Atlantic Flyway.', story:'During peak migration in May, serious birders arrive before dawn. The park records more bird species in a single day than most people see in a year.' },
-  { id:61, cat:'nature', name:'Shakespeare Garden',          sub:'80+ plants from Shakespeare\'s works',  lat:40.7785, lon:-73.9737, tags:['garden','shakespeare','botany'],            desc:'A winding informal garden featuring over 80 plants mentioned in Shakespeare\'s plays, each labeled with the relevant quotation. Includes mulberry trees grown from cuttings of a tree planted by Shakespeare himself.', story:'The mulberry cuttings trace their lineage to a tree at Shakespeare\'s home in Stratford-upon-Avon. These branches are genetically connected to something Shakespeare touched.' },
-  { id:62, cat:'nature', name:'Turtle Pond',                 sub:'Painted turtles and great blue herons', lat:40.7803, lon:-73.9692, tags:['turtles','wildlife','nature','pond'],     desc:'Home to painted turtles, red-eared sliders, great blue herons, and a variety of dragonflies below Belvedere Castle. One of the best wildlife observation spots in the park.', story:'The turtles sunbathe on logs most mornings April–October. On warm days dozens stack on the same log — a phenomenon that seems architecturally impossible until you see it.' },
-  { id:63, cat:'nature', name:'The Reservoir',               sub:'Jackie Kennedy ran here daily',         lat:40.7851, lon:-73.9618, tags:['running','jko reservoir','106 acres'],     desc:'The 106-acre Jacqueline Kennedy Onassis Reservoir held city drinking water from 1862 until 1993. The 1.58-mile running path is one of the most used in the world. Jackie Kennedy Onassis ran here daily in her final years.', story:'Jackie ran these loops every day for years, often unrecognized, jogging in a headscarf.' },
-
-  // CIVIL RIGHTS
-  { id:70, cat:'civil', name:'Sheep Meadow — Vietnam Protests', sub:'100,000–400,000 gathered April 15, 1967', lat:40.7707, lon:-73.9776, tags:['civil rights','vietnam','protest','1967'], desc:'Sheep Meadow was the primary gathering point for massive anti-Vietnam War demonstrations 1967–1972. On April 15, 1967, up to 400,000 people gathered here. Draft cards were burned publicly on this meadow.', story:'The April 1967 rally coordinated with a simultaneous 75,000-person march in San Francisco. Together they were a turning point in public opinion about the war.' },
-
-  // FACILITIES
-  { id:80, cat:'facility', name:'The Dairy Visitor Center',  sub:'Main park visitor center',              lat:40.7680, lon:-73.9741, tags:['visitor center','maps','info'],           desc:'The Victorian Gothic Dairy building (1870) now serves as the park\'s main visitor center. Staff can assist with navigation, events, and tours. Free maps available.', story:'Originally dispensed fresh milk to city children as a public health measure. Now dispenses maps.' },
-  { id:81, cat:'facility', name:'Charles A. Dana Discovery Center', sub:'Northeast park — free fishing', lat:40.7965, lon:-73.9518, tags:['visitor center','fishing','harlem meer'],  desc:'Environmental education center at Harlem Meer. Free fishing poles and bait for catch-and-release fishing April through October. One of the few places in Manhattan where you can fish for free.', story:'Every summer, thousands of city kids catch their first fish in this lake. The park provides all the equipment.' },
+  {id:1, cat:'landmark',name:'Bethesda Fountain',sub:'Emma Stebbins · 1873',lat:40.7740,lon:-73.9710,tags:['fountain','sculpture','wedding'],desc:'The centerpiece of Central Park. The Angel of the Waters is the only sculpture commissioned as part of the original park design — and secretly queer from day one. Sculptor Emma Stebbins was a lesbian who modeled the Angel on her partner Charlotte Cushman.',story:'Of 51 sculptures in Central Park, fewer than 10 depict women. This one, made by a lesbian and modeled on her lover, is the most famous.'},
+  {id:2, cat:'landmark',name:'Bow Bridge',sub:'Calvert Vaux · 1862',lat:40.7754,lon:-73.9726,tags:['bridge','film','romantic'],desc:'The largest and most filmed of the park\'s 36 bridges. Every bridge is different by design — Vaux considered variety essential so visitors never felt they were going in circles.',story:'Nora Ephron chose this bridge for When Harry Met Sally because, she said, it looks like a painting in every direction.'},
+  {id:3, cat:'landmark',name:'Belvedere Castle',sub:'Calvert Vaux · 1869',lat:40.7794,lon:-73.9691,tags:['castle','views','architecture'],desc:'Built as a decorative "folly" — never intended as a real castle. Sits on Vista Rock, the second-highest natural point in the park. Houses the Central Park Weather Station since 1919.',story:'It\'s not a real castle. Vaux built it so the Great Lawn would have a romantic focal point. It has never had any defensive purpose.'},
+  {id:4, cat:'landmark',name:'Strawberry Fields',sub:'John Lennon memorial · 1985',lat:40.7754,lon:-73.9790,tags:['memorial','lennon','peace'],desc:'A 2.5-acre international garden of peace dedicated to John Lennon, shot outside the Dakota across the street on December 8, 1980. The IMAGINE mosaic is a gift from Naples, Italy.',story:'People leave flowers at the IMAGINE mosaic every single day. The Dakota has never erected a plaque.'},
+  {id:5, cat:'landmark',name:'The Mall & Literary Walk',sub:'Only straight line in Olmsted\'s design',lat:40.7712,lon:-73.9712,tags:['elms','shakespeare','formal'],desc:'The only formal straight element in Olmsted\'s deliberately naturalistic design. Lined with one of the last great stands of American elm. Statues of Shakespeare, Burns, Scott, and Columbus.',story:'Olmsted hated straight lines. This is the one compromise he made, and he resented it.'},
+  {id:6, cat:'landmark',name:'Cleopatra\'s Needle',sub:'~1600 BCE · oldest object in NYC',lat:40.7796,lon:-73.9637,tags:['ancient','egypt','obelisk'],desc:'An Egyptian obelisk dating to ~1600 BCE — the oldest public monument in the Western Hemisphere. Julius Caesar and Cleopatra walked past it. Given to the US by Egypt in 1877.',story:'This obelisk was already ancient when Rome was born. It stood for 1,500 years before Columbus sailed. New York air pollution is slowly dissolving it.'},
+  {id:7, cat:'landmark',name:'Conservatory Garden',sub:'WPA project · 1937',lat:40.7957,lon:-73.9510,tags:['garden','formal','WPA'],desc:'Six acres of formal gardens in three styles: Italian, French, and English. The iron Vanderbilt Gate was salvaged from the Cornelius Vanderbilt II mansion, demolished 1926.',story:'This garden exists because of the New Deal. You walk through a Vanderbilt\'s gate every time you enter.'},
+  {id:8, cat:'landmark',name:'The Arsenal',sub:'Greensward Plan selected here · 1858',lat:40.7672,lon:-73.9706,tags:['history','architecture'],desc:'Built in 1848, this building predates Central Park. In April 1858 the commissioners met here and chose the "Greensward Plan" from 33 submissions — the decision that created the park.',story:'Before it was offices, the Arsenal briefly housed tigers and bears.'},
+  {id:9, cat:'landmark',name:'The Dairy',sub:'Calvert Vaux · 1870 · visitor center',lat:40.7680,lon:-73.9739,tags:['architecture','victorian'],desc:'Originally an actual dairy where fresh milk was dispensed to city children. Olmsted believed city children needed access to uncontaminated milk. Restored 1979.',story:'The milk supply in 1870 New York was often contaminated and killing children. Olmsted built a dairy inside the park as a public health remedy.'},
+  {id:10,cat:'landmark',name:'Wollman Rink',sub:'Trump renovation · 1986',lat:40.7646,lon:-73.9740,tags:['skating','film'],desc:'Built 1950. In 1986, the city had spent 6 years and $12M failing to renovate it. Trump completed it in 4 months under budget. Featured in Love Story and Serendipity.',story:'The failed city renovation spent $12 million. Trump completed it for $2.5 million. It was the launchpad for a public persona he would ride for decades.'},
+  {id:11,cat:'landmark',name:'Loeb Boathouse',sub:'When Harry Met Sally · rowing since 1859',lat:40.7758,lon:-73.9693,tags:['film','restaurant','rowing'],desc:'Rowboats available since the park opened in 1859. Nora Ephron filmed the iconic rowboat scene from When Harry Met Sally on the lake just outside.',story:'The only place in midtown Manhattan where you can sit on a lake surrounded entirely by trees with no buildings visible.'},
+  {id:12,cat:'landmark',name:'Delacorte Theater',sub:'Free Shakespeare since 1962',lat:40.7800,lon:-73.9695,tags:['theater','shakespeare','free'],desc:'Home to Shakespeare in the Park, founded on the principle that Shakespeare belongs to everyone. Meryl Streep, Denzel Washington, and Anne Hathaway have all performed here for free.',story:'The 1971 production here transferred to Broadway and won the Tony for Best Musical. A free park show launched a Broadway hit.'},
+  {id:13,cat:'landmark',name:'Naumburg Bandshell',sub:'1923 · Rolling Stones played here',lat:40.7718,lon:-73.9690,tags:['music','1923'],desc:'Built 1923. In 1975, the Rolling Stones pulled up on flatbed trucks and performed without a permit. Featured in Marathon Man (1976).',story:'The Rolling Stones performed here guerrilla-style — no permit, no stage. By the time police arrived, it was already a scene.'},
+  {id:14,cat:'landmark',name:'Tavern on the Green',sub:'Former sheepfold · 1934',lat:40.7730,lon:-73.9783,tags:['restaurant','history'],desc:'Originally the park\'s sheepfold. Robert Moses kicked the sheep out in 1934 and converted it to a restaurant. Under Warner LeRoy it became the highest-grossing restaurant in America.',story:'The meadow still bears the sheep\'s name 90 years after they left. Sheep grazed here from 1864 to 1934.'},
+  {id:20,cat:'film',name:'Gapstow Bridge',sub:'Home Alone 2 · Gossip Girl · Enchanted',lat:40.7641,lon:-73.9737,tags:['bridge','home alone 2'],desc:'Built 1896. Kevin McCallister fed pigeons here in Home Alone 2 (1992). One of the most filmed spots in the park, framing the Plaza Hotel skyline.',story:'If you\'ve seen New York in a movie, you\'ve almost certainly seen this bridge. It\'s Hollywood\'s most reliable Central Park establishing shot.'},
+  {id:21,cat:'film',name:'Bethesda Terrace (Film)',sub:'The Warriors · Angels in America',lat:40.7738,lon:-73.9708,tags:['the warriors','most filmed'],desc:'The single most filmed location in Central Park. In The Warriors (1979) all NYC gangs gather here. In Angels in America (2003) the fountain represents healing.',story:'The same fountain plays radically different roles in different films. It holds any meaning you give it — a blank canvas.'},
+  {id:22,cat:'film',name:'Sheep Meadow (Film)',sub:'Countless establishing shots',lat:40.7710,lon:-73.9773,tags:['establishing shot'],desc:'The 15-acre lawn is one of the most used establishing shots in New York film history — Hollywood\'s visual shorthand for Central Park at leisure.',story:'Olmsted designed this meadow to give urban New Yorkers the experience of open countryside. It became the world\'s shorthand for "city park."'},
+  {id:30,cat:'lgbtq',name:'The Ramble — Fruited Plain',sub:'Gay social history since 1900s',lat:40.7764,lon:-73.9712,tags:['lgbtq history','1920s'],desc:'A 36-acre wooded area that has been a gay meeting ground since at least the early 1900s. The north lawn was nicknamed "The Fruited Plain" in the 1920s. Harvey Milk was arrested here in 1947.',story:'In 1947, weeks out of high school, Harvey Milk was arrested here in a police entrapment operation.'},
+  {id:31,cat:'lgbtq',name:'Sheep Meadow — First Pride',sub:'First Gay Pride · June 28, 1970',lat:40.7708,lon:-73.9775,tags:['pride 1970','stonewall'],desc:'On June 28, 1970 — exactly one year after Stonewall — thousands gathered here for the first Christopher Street Liberation Day. The modern Pride parade descends from this moment.',story:'The organizers were stunned by the turnout. They had planned for a small gathering. What arrived was the beginning of a movement.'},
+  {id:32,cat:'lgbtq',name:'Seneca Village Site (LGBTQ)',sub:'Black community displaced · 1857',lat:40.7720,lon:-73.9785,tags:['displacement','black history'],desc:'From 1825–1857, approximately 225 Black residents lived here in one of Manhattan\'s most stable free Black communities. Seized by eminent domain to build the park.',story:'This was one of the few places free Black New Yorkers could own land and thus qualify to vote.'},
+  {id:40,cat:'history',name:'Seneca Village',sub:'Black community · 1825–1857',lat:40.7722,lon:-73.9787,tags:['displacement','black history','1857'],desc:'From 1825–1857, approximately 225 Black residents lived here. Three churches, two schools. The city used eminent domain and gave residents 90 days and below-market compensation.',story:'Seneca Village was one of the few places Black New Yorkers could own land and thus qualify to vote. The park we enjoy was built on their displacement.'},
+  {id:41,cat:'history',name:'Blockhouse No. 1',sub:'Oldest structure in park · 1814',lat:40.7979,lon:-73.9541,tags:['war of 1812','oldest structure'],desc:'Built in 1814 when British forces threatened New York. The attack never came. The last surviving remnant of Manhattan\'s wartime forts, predating the park by 45 years.',story:'This building was standing before the park existed, waiting for an invasion that never came.'},
+  {id:42,cat:'history',name:'Exonerated Five Site',sub:'April 19, 1989 · wrongful conviction',lat:40.7892,lon:-73.9554,tags:['wrongful conviction','racial justice'],desc:'Near here in 1989, five Black and Latino teenagers were coerced into false confessions and wrongfully convicted, serving 6–13 years before exoneration in 2002. They received a $41M settlement in 2014.',story:'Donald Trump took out full-page ads calling for the death penalty before the boys were tried. He never apologized after their exoneration.'},
+  {id:43,cat:'history',name:'The Dakota',sub:'John Lennon shot · Dec 8, 1980',lat:40.7762,lon:-73.9800,tags:['lennon','dakota'],desc:'On December 8, 1980, John Lennon was shot four times by Mark David Chapman in the archway of the Dakota. Chapman had received Lennon\'s autograph earlier that day.',story:'Chapman was holding a copy of The Catcher in the Rye when arrested. J.D. Salinger was reportedly horrified his novel had been invoked.'},
+  {id:50,cat:'music',name:'Great Lawn — Simon & Garfunkel',sub:'500,000 people · Sept 19, 1981',lat:40.7800,lon:-73.9654,tags:['concert','500k'],desc:'Simon & Garfunkel performed a free reunion concert before an estimated 500,000 people — one of the largest concerts in history. Broadcast on HBO in 1982.',story:'Half a million people stood on this lawn on one night. Simon and Garfunkel split again shortly after. Some reunions don\'t take.'},
+  {id:51,cat:'music',name:'Great Lawn — Nuclear Rally',sub:'1 million people · June 12, 1982',lat:40.7802,lon:-73.9656,tags:['nuclear','protest'],desc:'Approximately ONE MILLION people gathered here during the UN Special Session on Disarmament — the largest political demonstration in American history.',story:'One million people on this lawn in one afternoon. The damage required the lawn to be completely rebuilt with a new drainage system in 1997.'},
+  {id:52,cat:'music',name:'Rumsey Playfield — SummerStage',sub:'Free concerts since 1986',lat:40.7697,lon:-73.9712,tags:['summerstage','free music'],desc:'Home to City Parks Foundation\'s SummerStage since 1986, presenting ~100 events per year, roughly half completely free.',story:'SummerStage was born from the same movement that restored the park — the idea that Central Park should serve all New Yorkers.'},
+  {id:60,cat:'nature',name:'The Ramble — Birdwatching',sub:'Top migration site · East Coast',lat:40.7768,lon:-73.9715,tags:['birdwatching','migration','wildlife'],desc:'One of the top birdwatching sites in the eastern United States during spring and fall migration. Over 200 species recorded. Critical Atlantic Flyway habitat.',story:'During peak migration in May, serious birders arrive before dawn. The park records more bird species in a single day than most people see in a year.'},
+  {id:61,cat:'nature',name:'Shakespeare Garden',sub:"80+ plants from Shakespeare's works",lat:40.7785,lon:-73.9737,tags:['garden','shakespeare','botany'],desc:'A winding garden with over 80 plants mentioned in Shakespeare\'s plays, each labeled with the relevant quotation. Includes mulberry trees grown from cuttings of a tree planted by Shakespeare himself.',story:'These mulberry cuttings trace their lineage to a tree at Shakespeare\'s home in Stratford-upon-Avon. They are genetically connected to something Shakespeare touched.'},
+  {id:62,cat:'nature',name:'Turtle Pond',sub:'Painted turtles · great blue herons',lat:40.7803,lon:-73.9692,tags:['turtles','wildlife','pond'],desc:'Home to painted turtles, red-eared sliders, great blue herons, and dragonflies below Belvedere Castle.',story:'The turtles sunbathe on logs most mornings April–October. On warm days dozens stack on the same log.'},
+  {id:63,cat:'nature',name:'The Reservoir',sub:'Jackie Kennedy ran here daily',lat:40.7851,lon:-73.9618,tags:['running','106 acres','jko'],desc:'The 106-acre Jacqueline Kennedy Onassis Reservoir held city drinking water from 1862 until 1993. The 1.58-mile path is one of the most used running paths in the world.',story:'Jackie ran these loops every day for years, often unrecognized, jogging in a headscarf.'},
+  {id:70,cat:'civil',name:'Sheep Meadow — Vietnam Protests',sub:'Up to 400,000 gathered · April 1967',lat:40.7707,lon:-73.9776,tags:['vietnam','protest','1967'],desc:'Sheep Meadow was the primary gathering point for massive anti-Vietnam War demonstrations 1967–1972. On April 15, 1967, up to 400,000 people gathered. Draft cards were burned here.',story:'The April 1967 rally coordinated with a simultaneous 75,000-person march in San Francisco. Together they turned public opinion about the war.'},
+  {id:80,cat:'facility',name:'The Dairy Visitor Center',sub:'Main park visitor center',lat:40.7680,lon:-73.9741,tags:['visitor center','maps'],desc:'The Victorian Gothic Dairy building (1870) now serves as the park\'s main visitor center. Free maps available.',story:'Originally dispensed fresh milk to city children as a public health measure. Now dispenses maps.'},
+  {id:81,cat:'facility',name:'Dana Discovery Center',sub:'Free fishing · Harlem Meer',lat:40.7965,lon:-73.9518,tags:['fishing','harlem meer'],desc:'Free fishing poles and bait for catch-and-release fishing April through October at Harlem Meer.',story:'Every summer, thousands of city kids catch their first fish here. The park provides all the equipment.'},
 ];
 
-// ═══════════════════════════════════════════════════
-//  APP STATE
-// ═══════════════════════════════════════════════════
-let activeFilter = 'all';
-let searchQ = '';
-let selectedId = null;
-const markerMap = {};
+// MAP
+const CP_BOUNDS = L.latLngBounds([40.7624,-73.9833],[40.8009,-73.9472]);
+const map = L.map('map',{center:[40.7812,-73.9665],zoom:15,zoomControl:false,maxBounds:CP_BOUNDS,maxBoundsViscosity:1.0,minZoom:14,maxZoom:19});
+L.control.zoom({position:'bottomright'}).addTo(map);
 
-// ═══════════════════════════════════════════════════
-//  MAP
-// ═══════════════════════════════════════════════════
-const CP_BOUNDS = L.latLngBounds(
-  [40.7634, -73.9823],  // SW corner — just below 59th St
-  [40.7979, -73.9482]   // NE corner — just above 110th St
-);
-const map = L.map('map', {
-  center: [40.7829, -73.9654],
-  zoom: 15,
-  zoomControl: false,
-  maxBounds: CP_BOUNDS,
-  maxBoundsViscosity: 1.0,
-  minZoom: 14,
-  maxZoom: 19,
-});
-map.fitBounds(CP_BOUNDS);
-L.control.zoom({ position: 'bottomright' }).addTo(map);
-L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
-  attribution: '&copy; <a href="https://openstreetmap.org">OSM</a> &copy; <a href="https://carto.com">CARTO</a>',
-  maxZoom: 19,
+// Minimal clean tile layer — almost white, so our park overlay dominates
+L.tileLayer('https://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}{r}.png',{
+  attribution:'&copy; <a href="https://openstreetmap.org">OSM</a> &copy; <a href="https://carto.com">CARTO</a>',
+  maxZoom:19,opacity:.85
 }).addTo(map);
 
-function makeIcon(color) {
-  const s = `<svg xmlns="http://www.w3.org/2000/svg" width="26" height="34" viewBox="0 0 26 34">
-    <ellipse cx="13" cy="32" rx="5" ry="2" fill="rgba(0,0,0,.2)"/>
-    <path d="M13 0C7.5 0 3 4.5 3 10c0 7.5 10 23 10 23S23 17.5 23 10C23 4.5 18.5 0 13 0z" fill="${color}"/>
-    <circle cx="13" cy="10" r="4.5" fill="white" opacity=".85"/>
-  </svg>`;
-  return L.divIcon({ html: s, className: '', iconSize:[26,34], iconAnchor:[13,34], popupAnchor:[0,-34] });
+// Park polygon — illustrated green fill with gold border
+const PARK = [[40.7677,-73.9817],[40.7677,-73.9738],[40.7695,-73.9733],[40.7718,-73.9728],
+  [40.7741,-73.9718],[40.7762,-73.9707],[40.7782,-73.9698],[40.7802,-73.9688],
+  [40.7822,-73.9655],[40.7842,-73.9623],[40.7862,-73.9595],[40.7882,-73.9570],
+  [40.7900,-73.9549],[40.7922,-73.9528],[40.7942,-73.9512],[40.7963,-73.9501],
+  [40.7973,-73.9498],[40.7973,-73.9595],[40.7960,-73.9605],[40.7940,-73.9616],
+  [40.7920,-73.9628],[40.7900,-73.9640],[40.7880,-73.9652],[40.7860,-73.9663],
+  [40.7840,-73.9675],[40.7820,-73.9698],[40.7800,-73.9718],[40.7780,-73.9738],
+  [40.7760,-73.9758],[40.7740,-73.9778],[40.7720,-73.9798],[40.7700,-73.9813],
+  [40.7677,-73.9817]];
+
+L.polygon(PARK,{color:'#3d7a52',weight:2.5,opacity:.8,fillColor:'#4e9460',fillOpacity:.14}).addTo(map);
+L.polygon(PARK,{color:'#c9a84c',weight:.8,opacity:.4,fill:false}).addTo(map);
+map.fitBounds(CP_BOUNDS.pad(-0.04));
+
+// MARKERS — illustrated pins
+function makePin(cat,id){
+  const c=CAT[cat]||CAT.facility;
+  const g=c.glyph;
+  return L.divIcon({
+    html:`<div class="mk" id="mk-${id}" style="animation-delay:${(id%8)*0.06}s">
+      <svg xmlns="http://www.w3.org/2000/svg" width="38" height="48" viewBox="0 0 38 48">
+        <ellipse cx="19" cy="45.5" rx="6" ry="2" fill="rgba(0,0,0,.22)"/>
+        <path d="M19 1C12.4 1 7 6.4 7 13c0 9.5 12 33 12 33S31 22.5 31 13C31 6.4 25.6 1 19 1z" fill="${c.color}"/>
+        <path d="M19 2.2C12.9 2.2 8 7.1 8 13.2c0 .3 0 .5.02.8C8.8 8.2 13.5 3.8 19 3.8s10.2 4.4 11 9.9c.01-.3.02-.5.02-.8C30 7.1 25.1 2.2 19 2.2z" fill="rgba(255,255,255,.28)"/>
+        <circle cx="19" cy="13" r="7.8" fill="rgba(0,0,0,.18)"/>
+        <circle cx="19" cy="13" r="7" fill="white"/>
+        <text x="19" y="17" text-anchor="middle" font-size="9" font-family="system-ui">${g}</text>
+      </svg>
+    </div>`,
+    className:'',iconSize:[38,48],iconAnchor:[19,48],popupAnchor:[0,-50]
+  });
 }
 
-// ═══════════════════════════════════════════════════
-//  FILTERS
-// ═══════════════════════════════════════════════════
-const cats = ['all', ...Object.keys(COLORS)];
-const catLabels = { all:'All', landmark:'🏛️ Landmarks', film:'🎬 Film', lgbtq:'🏳️‍🌈 LGBTQ', history:'⚔️ History', music:'🎵 Music', nature:'🌿 Nature', civil:'✊ Civil Rights', facility:'🚻 Facilities' };
+// STATE
+let activeFilter='all',searchQ='',selectedId=null;
+const markerMap={};
 
-const filterWrap = document.getElementById('filters');
-cats.forEach(cat => {
-  const el = document.createElement('div');
-  el.className = 'pill' + (cat === 'all' ? ' on' : '');
-  el.textContent = catLabels[cat] || cat;
-  if (cat === 'all') el.style.background = '#1a3d2b';
-  el.onclick = () => {
-    activeFilter = cat;
-    document.querySelectorAll('.pill').forEach(p => {
-      p.classList.remove('on');
-      p.style.background = '';
-      p.style.color = '';
-    });
+// FILTERS
+const fltWrap=document.getElementById('flt');
+['all',...Object.keys(CAT)].forEach(cat=>{
+  const el=document.createElement('div');
+  el.className='pill'+(cat==='all'?' on':'');
+  el.textContent=cat==='all'?'All':(CAT[cat]?.label||cat);
+  if(cat==='all'){el.style.background='#c9a84c';el.style.color='#0d1f0f';}
+  el.onclick=()=>{
+    activeFilter=cat;
+    document.querySelectorAll('.pill').forEach(p=>{p.classList.remove('on');p.style.background='';p.style.color='';});
     el.classList.add('on');
-    el.style.background = cat === 'all' ? '#1a3d2b' : (COLORS[cat] || '#555');
-    el.style.color = 'white';
+    const col=cat==='all'?'#c9a84c':(CAT[cat]?.color||'#c9a84c');
+    el.style.background=col;el.style.color=cat==='all'?'#0d1f0f':'white';
     render();
   };
-  filterWrap.appendChild(el);
+  fltWrap.appendChild(el);
 });
 
-document.getElementById('search').addEventListener('input', e => {
-  searchQ = e.target.value.trim().toLowerCase();
-  render();
-});
+document.getElementById('srch').addEventListener('input',e=>{searchQ=e.target.value.trim().toLowerCase();render();});
 
-// ═══════════════════════════════════════════════════
-//  RENDER
-// ═══════════════════════════════════════════════════
-function getVisible() {
-  return DATA.filter(d => {
-    const catOk = activeFilter === 'all' || d.cat === activeFilter;
-    const textOk = !searchQ || [d.name, d.sub, d.desc, d.story, ...(d.tags||[])].join(' ').toLowerCase().includes(searchQ);
-    return catOk && textOk;
+function getVis(){
+  return DATA.filter(d=>{
+    if(activeFilter!=='all'&&d.cat!==activeFilter)return false;
+    if(!searchQ)return true;
+    return[d.name,d.sub,d.desc,d.story,...(d.tags||[])].join(' ').toLowerCase().includes(searchQ);
   });
 }
 
-function render() {
-  const visible = getVisible();
+function render(){
+  const vis=getVis();
+  Object.values(markerMap).forEach(m=>map.removeLayer(m));
+  Object.keys(markerMap).forEach(k=>delete markerMap[k]);
 
-  // clear markers
-  Object.values(markerMap).forEach(m => map.removeLayer(m));
-  Object.keys(markerMap).forEach(k => delete markerMap[k]);
-
-  // add markers
-  visible.forEach(d => {
-    const color = COLORS[d.cat] || '#555';
-    const m = L.marker([d.lat, d.lon], { icon: makeIcon(color) }).addTo(map);
-    m.bindPopup(`
-      <div class="lp">
-        <div class="lp-cat" style="color:${color}">${catLabels[d.cat]||d.cat}</div>
-        <div class="lp-name">${d.name}</div>
-        <div class="lp-sub">${d.sub||''}</div>
-        <button class="lp-btn" onclick="openPanel(${d.id})">More info →</button>
-      </div>`, { maxWidth: 240 });
-    m.on('click', () => { setSelected(d.id); openPanel(d.id); });
-    markerMap[d.id] = m;
+  vis.forEach(d=>{
+    const c=CAT[d.cat]||CAT.facility;
+    const m=L.marker([d.lat,d.lon],{icon:makePin(d.cat,d.id)}).addTo(map);
+    m.bindPopup(`<div class="lp"><div class="lpc" style="color:${c.color}">${c.label}</div><div class="lpn">${d.name}</div><div class="lpsb">${d.sub||''}</div><button class="lpb" onclick="openPanel(${d.id})">Read more →</button></div>`,{maxWidth:260});
+    m.on('click',()=>{setSelected(d.id);openPanel(d.id);});
+    markerMap[d.id]=m;
   });
 
-  // render list
-  const list = document.getElementById('list');
-  const count = document.getElementById('count');
-  count.textContent = `${visible.length} location${visible.length !== 1 ? 's' : ''}`;
-  list.innerHTML = '';
-  visible.forEach(d => {
-    const color = COLORS[d.cat] || '#555';
-    const el = document.createElement('div');
-    el.className = 'item' + (selectedId === d.id ? ' on' : '');
-    el.dataset.id = d.id;
-    el.innerHTML = `<div class="dot" style="background:${color}"></div><div><div class="iname">${d.name}</div><div class="isub">${d.sub||''}</div></div>`;
-    el.onclick = () => {
-      openPanel(d.id);
-      map.flyTo([d.lat, d.lon], 16, { duration: 0.8 });
-      markerMap[d.id]?.openPopup();
-    };
-    list.appendChild(el);
+  const lst=document.getElementById('lst');
+  document.getElementById('cnt').textContent=`${vis.length} location${vis.length!==1?'s':''} shown`;
+  lst.innerHTML='';
+  vis.forEach(d=>{
+    const c=CAT[d.cat]||CAT.facility;
+    const el=document.createElement('div');
+    el.className='itm'+(selectedId===d.id?' on':'');
+    el.dataset.id=d.id;
+    el.innerHTML=`<div class="iico" style="background:${c.color}18;border-color:${c.color}44;color:${c.color};font-size:13px">${c.glyph}</div><div><div class="inm">${d.name}</div><div class="isb">${d.sub||''}</div></div>`;
+    el.onclick=()=>{openPanel(d.id);map.flyTo([d.lat,d.lon],16,{duration:1});setTimeout(()=>markerMap[d.id]?.openPopup(),900);};
+    lst.appendChild(el);
   });
 }
 
-// ═══════════════════════════════════════════════════
-//  PANEL
-// ═══════════════════════════════════════════════════
-function openPanel(id) {
+function openPanel(id){
   setSelected(id);
-  const d = DATA.find(x => x.id === id);
-  if (!d) return;
-  const color = COLORS[d.cat] || '#555';
-
-  document.getElementById('p-badge').textContent = catLabels[d.cat] || d.cat;
-  document.getElementById('p-badge').style.background = color;
-  document.getElementById('p-title').textContent = d.name;
-  document.getElementById('p-sub').textContent = d.sub || '';
-  document.getElementById('p-desc').textContent = d.desc || '';
-  document.getElementById('p-coords').textContent = `📍 ${d.lat}, ${d.lon}`;
-
-  const tagsEl = document.getElementById('p-tags');
-  tagsEl.innerHTML = '';
-  (d.tags||[]).forEach(t => { const s = document.createElement('span'); s.className = 'ptag'; s.textContent = t; tagsEl.appendChild(s); });
-
-  const storyEl = document.getElementById('p-story');
-  if (d.story) {
-    document.getElementById('p-story-text').textContent = d.story;
-    storyEl.style.display = 'block';
-  } else {
-    storyEl.style.display = 'none';
-  }
-
-  document.getElementById('panel').classList.add('open');
-
-  const li = document.querySelector(`.item[data-id="${id}"]`);
-  if (li) li.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  const d=DATA.find(x=>x.id===id);
+  if(!d)return;
+  const c=CAT[d.cat]||CAT.facility;
+  const pcat=document.getElementById('pcat');
+  pcat.textContent=c.label;pcat.style.color=c.color;
+  document.getElementById('pt').textContent=d.name;
+  document.getElementById('ps').textContent=d.sub||'';
+  document.getElementById('pd').textContent=d.desc||'';
+  document.getElementById('pco').textContent=`${d.lat}°N  ${Math.abs(d.lon)}°W`;
+  const te=document.getElementById('ptags');te.innerHTML='';
+  (d.tags||[]).forEach(t=>{const s=document.createElement('span');s.className='ptag';s.textContent=t;te.appendChild(s);});
+  const se=document.getElementById('pst');
+  if(d.story){document.getElementById('pstxt').textContent=d.story;se.style.borderLeftColor=c.color;se.style.display='block';}
+  else se.style.display='none';
+  document.getElementById('pnl').classList.add('open');
+  const li=document.querySelector(`.itm[data-id="${id}"]`);
+  if(li)li.scrollIntoView({behavior:'smooth',block:'nearest'});
 }
 
-function closePanel() {
-  document.getElementById('panel').classList.remove('open');
-  selectedId = null;
-  document.querySelectorAll('.item').forEach(el => el.classList.remove('on'));
+function closePanel(){
+  document.getElementById('pnl').classList.remove('open');
+  selectedId=null;
+  document.querySelectorAll('.itm').forEach(el=>el.classList.remove('on'));
 }
 
-function setSelected(id) {
-  selectedId = id;
-  document.querySelectorAll('.item').forEach(el => el.classList.toggle('on', parseInt(el.dataset.id) === id));
+function setSelected(id){
+  selectedId=id;
+  document.querySelectorAll('.itm').forEach(el=>el.classList.toggle('on',parseInt(el.dataset.id)===id));
+  document.querySelectorAll('.mk').forEach(el=>el.classList.remove('sel'));
+  const el=document.getElementById(`mk-${id}`);
+  if(el)el.classList.add('sel');
 }
 
-window.openPanel = openPanel;
-
-// ═══════════════════════════════════════════════════
-//  GO
-// ═══════════════════════════════════════════════════
+window.openPanel=openPanel;
 render();
 </script>
 </body>
