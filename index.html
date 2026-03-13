@@ -297,11 +297,20 @@ const markerMap = {};
 // ═══════════════════════════════════════════════════
 //  MAP
 // ═══════════════════════════════════════════════════
+const CP_BOUNDS = L.latLngBounds(
+  [40.7634, -73.9823],  // SW corner — just below 59th St
+  [40.7979, -73.9482]   // NE corner — just above 110th St
+);
 const map = L.map('map', {
   center: [40.7829, -73.9654],
-  zoom: 14,
+  zoom: 15,
   zoomControl: false,
+  maxBounds: CP_BOUNDS,
+  maxBoundsViscosity: 1.0,
+  minZoom: 14,
+  maxZoom: 19,
 });
+map.fitBounds(CP_BOUNDS);
 L.control.zoom({ position: 'bottomright' }).addTo(map);
 L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
   attribution: '&copy; <a href="https://openstreetmap.org">OSM</a> &copy; <a href="https://carto.com">CARTO</a>',
